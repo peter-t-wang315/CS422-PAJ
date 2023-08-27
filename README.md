@@ -1,0 +1,2 @@
+# CS422-PAJ
+Our WSU CPTS 422 PAJ team repo
