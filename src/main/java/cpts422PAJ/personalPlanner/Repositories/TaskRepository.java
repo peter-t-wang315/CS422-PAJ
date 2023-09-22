@@ -1,0 +1,7 @@
+package cpts422PAJ.personalPlanner.Repositories;
+
+import cpts422PAJ.personalPlanner.entities.Task;
+import org.springframework.data.repository.CrudRepository;
+
+public interface TaskRepository extends CrudRepository<Task,Long> {
+}

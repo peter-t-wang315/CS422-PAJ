@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class User {
+public class Users {
     private String email;
     private String userName;
     private String firstName;
@@ -21,15 +21,19 @@ public class User {
     @Id
     private Long id;
 
-    public User(String email, String userName, String firstName, String lastName) {
+    public Users(String email, String userName, String firstName, String lastName) {
         this.email = email;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
-    public User() {
+    public Users() {
 
+    }
+
+    public void addTask(Task task){
+        tasks.add(task);
     }
 
 
@@ -77,7 +81,7 @@ public class User {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
+        Users user = (Users) o;
         return Objects.equals(email, user.email) && Objects.equals(userName, user.userName) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(id, user.id);
     }
 
