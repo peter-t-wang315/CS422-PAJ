@@ -1,9 +1,8 @@
 package cpts422PAJ.personalPlanner.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,35 +14,32 @@ public class Users {
     private String lastName;
 
 
-    @OneToMany
-    private List<Task> tasks;
+//    @OneToMany
+//    private ArrayList<Task> tasks;
+// If you want to add these back have to redo string method and getter
 
     @Id
+    @GeneratedValue
     private Long id;
+
 
     public Users(String email, String userName, String firstName, String lastName) {
         this.email = email;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+//        tasks = new ArrayList<Task>();
     }
 
     public Users() {
 
     }
 
-    public void addTask(Task task){
-        tasks.add(task);
-    }
+//    public void addTask(Task task){
+//        tasks.add(task);
+//    }
 
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 
     public String getEmail() {
         return email;
@@ -91,14 +87,27 @@ public class Users {
     }
 
 
+
+
+//    public ArrayList<Task> getTasks() {
+//        return tasks;
+//    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
+        return "Users{" +
                 "email='" + email + '\'' +
                 ", userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", tasks=" + tasks +
                 ", id=" + id +
                 '}';
     }

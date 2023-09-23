@@ -24,29 +24,30 @@ public class InitialSetup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("hello");
+        System.out.println("Starting DataBase....");
 
 
-//        Users jon = new Users("jon.b@wsu.edu", "jonb","Jon", "b");
-//        Users jane = new Users("jane.doe@wsu.edu", "jDoe","jane", "Doe");
-//        jon = userRepository.save(jon);
-//        jane = userRepository.save(jane);
-//
-//
-//        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-//        Date date = dateFormat.parse(("09/25/2023"));
-//
-//        //String taskName, boolean completed, String note, Timestamp dueDate
-//        Task hw1 = new Task("homework1", false, "do this", date);
-//        Task hw2 = new Task("homework2", false, "do this", date);
-//        jon.addTask((hw1));
-//        jane.addTask((hw2));
-//
-//        hw1 = taskRepository.save(hw1);
-//        hw2 = taskRepository.save(hw2);
-//        System.out.println("Starting database...");
-//
-//        System.out.println(jon);
+        Users jon = new Users("jon.b@wsu.edu", "jonb","Jon", "b");
+        Users jane = new Users("jane.doe@wsu.edu", "jDoe","jane", "Doe");
+        jon = userRepository.save(jon);
+        jane = userRepository.save(jane);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = dateFormat.parse(("25/09/2023"));
+        Task hw1 = new Task("homework1", false, "do this", date, jon);
+        Task hw2 = new Task("homework2", false, "do this", date,jane);
+        Task hw3 = new Task("homework3", false, "do this", date,jon);
+
+        hw1 = taskRepository.save(hw1);
+        hw2 = taskRepository.save(hw2);
+        hw3 = taskRepository.save(hw3);
+
+
+
+
+        System.out.println(hw1);
+        System.out.println(hw2);
+        System.out.println(hw3);
+
 
 
     }
