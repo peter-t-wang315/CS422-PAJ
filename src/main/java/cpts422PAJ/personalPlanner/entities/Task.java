@@ -1,10 +1,9 @@
 package cpts422PAJ.personalPlanner.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 public class Task {
@@ -20,14 +19,21 @@ public class Task {
 
     private Timestamp created;
 
-    private Timestamp dueDate;
+    private Date dueDate;
 
-    public Task(String taskName, boolean completed, String note, Timestamp dueDate) {
+
+    @ManyToOne
+//    @JoinColumn(name = "Users_id")
+    private Users u;
+
+
+    public Task(String taskName, boolean completed, String note, Date dueDate, Users u) {
         this.taskName = taskName;
         this.completed = completed;
         this.note = note;
         this.created = new Timestamp(System.currentTimeMillis());
         this.dueDate = dueDate;
+        this.u = u;
     }
 
     public Task() {
@@ -69,13 +75,17 @@ public class Task {
         return created;
     }
 
-    public Timestamp getDueDate() {
+    public Date getDueDate() {
         return dueDate;
     }
 
     public void setDueDate(Timestamp dueDate) {
         this.dueDate = dueDate;
     }
+
+
+
+
 
     @Override
     public String toString() {
@@ -86,6 +96,7 @@ public class Task {
                 ", note='" + note + '\'' +
                 ", created=" + created +
                 ", dueDate=" + dueDate +
+                ", user=" + u +
                 '}';
     }
 }
