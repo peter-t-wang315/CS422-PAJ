@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Personal Planner Application</h1>
+<table style="border: solid">
+    <thead>
+    <tr>
+        <th>Task Name</th>
+        <th>Is Completed</th>
+        <th>Note</th>
+        <th>Date Created</th>
+        <th>Due Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="task: ${tasks}">
+        <td th:text="${task.getTaskName()}">Test task name</td>
+        <td th:text="${task.isCompleted()}">False</td>
+        <td th:text="${task.getNote()}">Test task name</td>
+        <td th:text="${task.getCreated()}">Test task name</td>
+        <td th:text="${task.getDueDate()}">Test task name</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

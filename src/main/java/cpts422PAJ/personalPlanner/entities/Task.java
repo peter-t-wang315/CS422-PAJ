@@ -83,9 +83,7 @@ public class Task {
         this.dueDate = dueDate;
     }
 
-
-
-
+    public Long getUserID() { return u.getId(); }
 
     @Override
     public String toString() {
