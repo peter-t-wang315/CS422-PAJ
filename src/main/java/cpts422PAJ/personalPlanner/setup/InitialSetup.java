@@ -27,8 +27,8 @@ public class InitialSetup implements CommandLineRunner {
         System.out.println("Starting DataBase....");
 
 
-        Users jon = new Users("jon.b@wsu.edu", "jonb","Jon", "b");
-        Users jane = new Users("jane.doe@wsu.edu", "jDoe","jane", "Doe");
+        Users jon = new Users("jon.b@wsu.edu","jonb","123" ,"Jon", "b");
+        Users jane = new Users("jane.doe@wsu.edu","jDoe", "123","jane", "Doe");
         jon = userRepository.save(jon);
         jane = userRepository.save(jane);
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
