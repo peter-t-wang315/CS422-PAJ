@@ -1,9 +1,9 @@
 package cpts422PAJ.personalPlanner.setup;
 
-import cpts422PAJ.personalPlanner.Repositories.TaskRepository;
+import cpts422PAJ.personalPlanner.repositories.TaskRepository;
 import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.entities.Users;
-import cpts422PAJ.personalPlanner.Repositories.UserRepository;
+import cpts422PAJ.personalPlanner.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
