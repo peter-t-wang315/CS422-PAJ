@@ -2,6 +2,7 @@ package cpts422PAJ.personalPlanner.services;
 
 import cpts422PAJ.personalPlanner.entities.Users;
 import cpts422PAJ.personalPlanner.repositories.UserRepository;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -49,10 +50,34 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public List getNames(){
-        List names = new ArrayList<>();
+    public void changeUserActivity(String name, String pass){
+        List<String> names = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
         userRepository.findAll().forEach(users -> names.add(users.getUserName()) );
-        return names;
+        userRepository.findAll().forEach(users -> ids.add(users.getId()) );
+        for (int i = 0; i< names.size();i++){
+            if (Objects.equals(names.get(i), name)){
+                Users user = userRepository.findById(new Long(i+1)).get();
+//                userRepository.findById(new Long(i+1)).get().setCurrUser(true);
+                user.setCurrUser(true);
+
+                userRepository.save(user);
+            }
+        }
+    }
+
+    public Long findActiveUser(){
+        List<Boolean> currentUserList = new ArrayList<>();
+        userRepository.findAll().forEach(users -> currentUserList.add(users.isCurrentUser()));
+//        System.out.print("In findActiveUser");
+        for(int i =0; i < currentUserList.size(); i++){
+            if(currentUserList.get(i)){
+
+                return new Long(i+1);
+            }
+        }
+
+        return new Long(0);
     }
 
 }

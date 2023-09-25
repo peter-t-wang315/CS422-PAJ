@@ -127,4 +127,10 @@ public class Users {
     public int hashCode() {
         return Objects.hash(email, userName, firstName, lastName, userPassword, currUser, id);
     }
+
+    public void setCurrUser(boolean currUser) {
+        this.currUser = currUser;
+    }
+
+
 }
