@@ -12,7 +12,7 @@
     <label for="completed">Completion Status</label>
     <input id="completed" type="checkbox" name="completed" th:checked="${currentTask.isCompleted()}" />
     <p>New Note: <input th:field="*{note}" type="text" name="note" id="note" th:value="${note} ? ${note} : ${currentTask.getNote()}"></p>
-    <p>New Due Date: <input th:field="*{dueDate}" type="datetime-local" name="dueDate" id="dueDate" th:value="${dueDate} ? ${#dates.format(currentTask.getDueDate(), 'yyyy-MM-dd HH:mm:ss')} : ${currentTask.getDueDate()}"></p>
+    <p>New Due Date: <input th:field="*{dueDate}" type="datetime-local" name="dueDate" id="dueDate" th:value="${dueDate} ? ${#dates.format(dueDate, 'yyyy-MM-ddTHH:mm')} : ${currentTask.getDueDate()}"></p>
 
     <input type="hidden" name="id" id="id" th:value="${currentTask.getId()}">
     <input type="hidden" name="createdTime" id="createdTime" th:value="${#dates.format(currentTask.getCreated(), 'yyyy-MM-dd HH:mm:ss.SSS')}">

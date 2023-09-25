@@ -58,7 +58,7 @@ public class TaskController {
     public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam String createdTime, @RequestParam String dueDate, Model model) {
         System.out.println(task);
         task.setUser(userService.getUserById(userId));
-        DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm");
         DateFormat createdDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {
             Date parsedDueDate = dueDateFormat.parse(dueDate);
