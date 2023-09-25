@@ -5,5 +5,7 @@ import cpts422PAJ.personalPlanner.entities.Users;
 public interface UserService {
     public Iterable<Users> findAll();
 
+    public Users getUserById(Long id);
+
     public Users save(Users users);
 }

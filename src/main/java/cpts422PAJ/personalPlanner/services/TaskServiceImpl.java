@@ -5,6 +5,9 @@ import cpts422PAJ.personalPlanner.repositories.TaskRepository;
 import cpts422PAJ.personalPlanner.entities.Users;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
@@ -18,10 +21,10 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findAll();
     }
 
-//    @Override
-//    public Iterable<Task> findAllByUsers(Users users) {
-//        return taskRepository.findAllByUserId(users.getId());
-//    }
+    @Override
+    public List<Task> getTasksForUser(Users user) {
+        return taskRepository.findTasksByUserId(user.getId());
+    }
 
     @Override
     public Task save(Task task) {

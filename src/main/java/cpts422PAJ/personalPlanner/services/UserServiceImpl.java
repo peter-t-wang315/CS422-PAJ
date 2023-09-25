@@ -18,6 +18,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Users getUserById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
+    @Override
     public Users save(Users users) {
         return null;
     }
