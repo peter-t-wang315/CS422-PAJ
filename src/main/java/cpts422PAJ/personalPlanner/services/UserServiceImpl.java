@@ -60,8 +60,8 @@ public class UserServiceImpl implements UserService {
                 Users user = userRepository.findById(new Long(i+1)).get();
 //                userRepository.findById(new Long(i+1)).get().setCurrUser(true);
                 user.setCurrUser(true);
-
                 userRepository.save(user);
+                break;
             }
         }
     }
@@ -78,6 +78,19 @@ public class UserServiceImpl implements UserService {
         }
 
         return new Long(0);
+    }
+
+    public void logOffUser(){
+        List<Boolean> currentUsers = new ArrayList<>();
+        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()) );
+        for (int i = 0; i< currentUsers.size();i++){
+            if (currentUsers.get(i) == true){
+                Users user = userRepository.findById(new Long(i+1)).get();
+                user.setCurrUser(false);
+                userRepository.save(user);
+                break;
+            }
+        }
     }
 
 }

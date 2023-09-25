@@ -15,4 +15,6 @@ public interface UserService {
     public void changeUserActivity(String name, String pass);
 
     public Long findActiveUser();
+
+    public void logOffUser();
 }
