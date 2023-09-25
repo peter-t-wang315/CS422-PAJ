@@ -18,12 +18,12 @@ public class Users {
     }
 
     public boolean isCurrentUser() {
-        return currentUser;
+        return currUser;
     }
 
     private String userPassword;
 
-    private boolean currentUser;
+    private boolean currUser;
 
 
 //    @OneToMany
@@ -35,13 +35,13 @@ public class Users {
     private Long id;
 
 
-    public Users(String email, String userName, String password,String firstName, String lastName) {
+    public Users(String email, String userName, String userPassword,String firstName, String lastName) {
         this.email = email;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userPassword = password;
-        this.currentUser = false;
+        this.userPassword = userPassword;
+        this.currUser = false;
 //        tasks = new ArrayList<Task>();
     }
 
@@ -110,7 +110,7 @@ public class Users {
                 ", userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", currentUser=" + currentUser +
+                ", currentUser=" + currUser +
                 ", id=" + id +
                 '}';
     }
@@ -120,11 +120,11 @@ public class Users {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Users users = (Users) o;
-        return currentUser == users.currentUser && Objects.equals(email, users.email) && Objects.equals(userName, users.userName) && Objects.equals(firstName, users.firstName) && Objects.equals(lastName, users.lastName) && Objects.equals(userPassword, users.userPassword) && Objects.equals(id, users.id);
+        return currUser == users.currUser && Objects.equals(email, users.email) && Objects.equals(userName, users.userName) && Objects.equals(firstName, users.firstName) && Objects.equals(lastName, users.lastName) && Objects.equals(userPassword, users.userPassword) && Objects.equals(id, users.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(email, userName, firstName, lastName, userPassword, currentUser, id);
+        return Objects.hash(email, userName, firstName, lastName, userPassword, currUser, id);
     }
 }
