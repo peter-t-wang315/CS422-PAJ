@@ -13,6 +13,18 @@ public class Users {
     private String firstName;
     private String lastName;
 
+    public String getPassword() {
+        return userPassword;
+    }
+
+    public boolean isCurrentUser() {
+        return currUser;
+    }
+
+    private String userPassword;
+
+    private boolean currUser;
+
 
 //    @OneToMany
 //    private ArrayList<Task> tasks;
@@ -23,11 +35,13 @@ public class Users {
     private Long id;
 
 
-    public Users(String email, String userName, String firstName, String lastName) {
+    public Users(String email, String userName, String userPassword,String firstName, String lastName) {
         this.email = email;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.userPassword = userPassword;
+        this.currUser = false;
 //        tasks = new ArrayList<Task>();
     }
 
@@ -73,19 +87,6 @@ public class Users {
         this.lastName = lastName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Users user = (Users) o;
-        return Objects.equals(email, user.email) && Objects.equals(userName, user.userName) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(email, userName, firstName, lastName, id);
-    }
-
 
 
 
@@ -101,6 +102,7 @@ public class Users {
         return id;
     }
 
+
     @Override
     public String toString() {
         return "Users{" +
@@ -108,7 +110,21 @@ public class Users {
                 ", userName='" + userName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", currentUser=" + currUser +
                 ", id=" + id +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Users users = (Users) o;
+        return currUser == users.currUser && Objects.equals(email, users.email) && Objects.equals(userName, users.userName) && Objects.equals(firstName, users.firstName) && Objects.equals(lastName, users.lastName) && Objects.equals(userPassword, users.userPassword) && Objects.equals(id, users.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, userName, firstName, lastName, userPassword, currUser, id);
     }
 }

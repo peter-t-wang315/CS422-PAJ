@@ -26,11 +26,13 @@ public class InitialSetup implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting DataBase....");
 
+        Users jon = new Users("jon.b@wsu.edu", "jonb", "pass","Jon", "b");
 
-        Users jon = new Users("jon.b@wsu.edu", "jonb","Jon", "b");
-        Users jane = new Users("jane.doe@wsu.edu", "jDoe","jane", "Doe");
+        Users jane = new Users("jane.doe@wsu.edu","jDoe", "123","jane", "Doe");
         jon = userRepository.save(jon);
         jane = userRepository.save(jane);
+
+
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = dateFormat.parse(("25/09/2023"));
         Task hw1 = new Task("homework1", false, "do this", date, jon);
