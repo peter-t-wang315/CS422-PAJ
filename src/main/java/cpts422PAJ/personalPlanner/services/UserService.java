@@ -12,5 +12,7 @@ public interface UserService {
     public Users save(Users users);
 
     public boolean isUser(String name, String pass);
-    public List getNames();
+    public void changeUserActivity(String name, String pass);
+
+    public Long findActiveUser();
 }

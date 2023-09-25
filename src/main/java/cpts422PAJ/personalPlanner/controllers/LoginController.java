@@ -33,6 +33,7 @@ public class LoginController {
 
             return "login";
         }
+        userService.changeUserActivity(username,password);
 
         return "redirect:/";
 
