@@ -41,13 +41,27 @@ public class TaskController {
             return "index";
         } catch (Exception e) {
             System.out.println(e.getMessage());
+
+            userService.logOffAllUsers();
             return "redirect:/login";
         }
     }
 
     @RequestMapping("/editTask/{taskId}")
     public String editTask(@PathVariable Long taskId, Model model) {
+        Long idActiveUser = userService.findActiveUser();
         Task current_task = taskService.getTaskById(taskId);
+//        System.out.println(current_task.getUserID());
+//        System.out.println(idActiveUser);
+        if (idActiveUser == 0 ){
+            userService.logOffAllUsers();
+            return "redirect:/login";
+        }
+        if (!idActiveUser.equals(current_task.getUserID())){
+            return "redirect:/";
+        }
+
+
         Long userId = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : "";

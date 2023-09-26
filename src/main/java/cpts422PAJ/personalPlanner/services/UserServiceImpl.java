@@ -93,4 +93,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public void logOffAllUsers(){
+        List<Boolean> currentUsers = new ArrayList<>();
+        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()) );
+        for (int i = 0; i< currentUsers.size();i++){
+            if (currentUsers.get(i) == true){
+                Users user = userRepository.findById(new Long(i+1)).get();
+                user.setCurrUser(false);
+                userRepository.save(user);
+
+            }
+        }
+    }
+
 }

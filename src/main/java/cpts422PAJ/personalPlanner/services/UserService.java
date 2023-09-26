@@ -17,4 +17,6 @@ public interface UserService {
     public Long findActiveUser();
 
     public void logOffUser();
+
+    public void logOffAllUsers();
 }
