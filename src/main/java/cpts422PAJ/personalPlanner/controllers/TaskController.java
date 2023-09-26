@@ -43,25 +43,25 @@ public class TaskController {
     public String editTask(@PathVariable Long taskId, Model model) {
         Task current_task = taskService.getTaskById(taskId);
         Long userId = null;
-        String dueDate = null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : "";
         String createdTime = null;
         model.addAttribute("currentTask", current_task);
-        model.addAttribute("dueDate", dueDate);
+        model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
-        model.addAttribute("userId", userId)
-        ;
+        model.addAttribute("userId", userId);
 
         return "editTask";
     }
 
     @RequestMapping("/updateTask")
-    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam String createdTime, @RequestParam String dueDate, Model model) {
+    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
         System.out.println(task);
         task.setUser(userService.getUserById(userId));
-        DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-ddTHH:mm");
+        DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         DateFormat createdDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {
-            Date parsedDueDate = dueDateFormat.parse(dueDate);
+            Date parsedDueDate = dueDateFormat.parse(newDueDate);
             Date parsedCreatedTime = createdDateFormat.parse(createdTime);
             task.setDueDate(new Timestamp(parsedDueDate.getTime()));
             task.setCreated(new Timestamp(parsedCreatedTime.getTime()));
