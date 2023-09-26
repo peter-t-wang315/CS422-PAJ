@@ -85,6 +85,16 @@ public class Task {
 
     public Long getUserID() { return u.getId(); }
 
+    public Users getUser() { return u; }
+
+    public void setUser(Users u) {
+        this.u = u;
+    }
+
+    public void setCreated(Timestamp created){
+        this.created = created;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

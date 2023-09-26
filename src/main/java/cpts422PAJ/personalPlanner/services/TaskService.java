@@ -10,6 +10,8 @@ public interface TaskService {
 
     public List<Task> getTasksForUser(Users user);
 
+    public Task getTaskById(Long id);
+
     public Task save(Task task);
 
 }
