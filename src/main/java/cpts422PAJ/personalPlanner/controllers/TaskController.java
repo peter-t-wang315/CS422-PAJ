@@ -33,11 +33,16 @@ public class TaskController {
     public String getTasks(Model model){
 //        System.out.println("In getTasks");
 //        Iterable<Users> all_users = userService.findAll();
-        Long idActiveUser = userService.findActiveUser();
-        Users current_user= userService.getUserById(idActiveUser);
-        model.addAttribute("tasks", taskService.getTasksForUser(current_user));
-        model.addAttribute("users", userService.findAll());
-        return "index";
+        try {
+            Long idActiveUser = userService.findActiveUser();
+            Users current_user = userService.getUserById(idActiveUser);
+            model.addAttribute("tasks", taskService.getTasksForUser(current_user));
+            model.addAttribute("users", userService.findAll());
+            return "index";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "redirect:/login";
+        }
     }
 
     @RequestMapping("/editTask/{taskId}")
