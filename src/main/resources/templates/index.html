@@ -50,7 +50,7 @@
         <td th:text="${task.getNote()}">Test task name</td>
         <td th:text="${task.getCreated()}">Test task name</td>
         <td th:text="${task.getDueDate()}">Test task name</td>
-        <br>
+        <td><a th:href="@{'/editTask/' + ${task.getId()}}">Edit Task</a></td>
     </tr>
     </tbody>
 </table>
