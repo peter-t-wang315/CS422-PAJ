@@ -2,10 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <style>
+        *{
+            background: burlywood;
+            color: saddlebrown;
+            font-family: "courier New", monospace;
+        }
+        .head{
+            text-align: center;
+
+
+        }
+        .btn {
+            transition-duration: 0.4s;
+            border-color: saddlebrown;
+            border-radius: 8px;
+            margin-left: 90%;
+
+        }
+
+        .btn:hover {
+
+            background-color: saddlebrown;
+            color: white;
+        }
+    </style>
+    <title>Personal Planner</title>
+
 </head>
 <body>
-<h1>Personal Planner Application</h1>
+<h1 class="head">Personal Planner Application</h1>
 <table style="border: solid">
     <thead>
     <tr>
@@ -27,5 +54,13 @@
     </tr>
     </tbody>
 </table>
+<br>
+<br>
+<br>
+<form name="logOut" action="logOut" method="POST">
+    <input class="btn" type="submit" value="Logout">
+</form>
+
+
 </body>
 </html>

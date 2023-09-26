@@ -39,6 +39,13 @@ public class LoginController {
 
     }
 
+    //could make a controller just for this, seems unnecesary without other functionalities
+    @RequestMapping(value= "/logOut", method = RequestMethod.POST)
+    public String logOut(){
+        userService.logOffUser();
+        return "redirect:/login";
+    }
+
 
 
 
