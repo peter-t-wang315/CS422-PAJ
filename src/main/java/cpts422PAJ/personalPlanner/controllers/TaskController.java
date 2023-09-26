@@ -31,10 +31,11 @@ public class TaskController {
 
     @RequestMapping("/")
     public String getTasks(Model model){
-        Iterable<Users> all_users = userService.findAll();
-        Users current_user= userService.getUserById(new Long(2));
-//        model.addAttribute("tasks", taskService.getTasksForUser(current_user));
-        model.addAttribute("tasks", taskService.findAll());
+//        System.out.println("In getTasks");
+//        Iterable<Users> all_users = userService.findAll();
+        Long idActiveUser = userService.findActiveUser();
+        Users current_user= userService.getUserById(idActiveUser);
+        model.addAttribute("tasks", taskService.getTasksForUser(current_user));
         model.addAttribute("users", userService.findAll());
         return "index";
     }
