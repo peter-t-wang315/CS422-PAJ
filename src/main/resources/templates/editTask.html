@@ -2,10 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <style>
+        *{
+            background: burlywood;
+            color: saddlebrown;
+            font-family: "courier New", monospace;
+        }
+        .head{
+            text-align: center;
+
+
+        }
+        .btn {
+            transition-duration: 0.4s;
+            border-color: saddlebrown;
+            border-radius: 8px;
+            margin-left: 90%;
+
+        }
+
+        .btn:hover {
+
+            background-color: saddlebrown;
+            color: white;
+        }
+    </style>
     <title>Edit Task</title>
 </head>
 <body>
-<h2>Edit Current Task</h2>
+<h2 class="head">Edit Current Task</h2>
 <form action="" th:action="@{/updateTask}" th:object="${currentTask}" method="post">
     <p>New Task Name: <input th:field="*{taskName}" type="text" name="taskName" id="taskName" th:value="${taskName} ? ${taskname} : ${currentTask.getTaskName()}"></p>
 
@@ -18,7 +43,7 @@
     <input type="hidden" name="id" id="id" th:value="${currentTask.getId()}">
     <input type="hidden" name="createdTime" id="createdTime" th:value="${#dates.format(currentTask.getCreated(), 'yyyy-MM-dd HH:mm:ss.SSS')}">
     <input type="hidden" name="userId" id="userId" th:value="${currentTask.getUserID()}">
-    <p><input type="submit" value="submit"></p>
+    <p><input class="btn" type="submit" value="submit"></p>
 </form>
 </body>
 </html>

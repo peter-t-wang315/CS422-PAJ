@@ -27,6 +27,11 @@
             background-color: saddlebrown;
             color: white;
         }
+
+        td{
+            padding: 13px;
+        }
+
     </style>
     <title>Personal Planner</title>
 
@@ -37,17 +42,26 @@
     <thead>
     <tr>
         <th>Task Name</th>
+        <br>
         <th>Is Completed</th>
+        <br>
         <th>Note</th>
+        <br>
         <th>Date Created</th>
+        <br>
         <th>Due Date</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="task: ${tasks}">
         <td th:text="${task.getTaskName()}">Test task name</td>
+
+
         <td th:text="${task.isCompleted()}">False</td>
+
         <td th:text="${task.getNote()}">Test task name</td>
+
+
         <td th:text="${task.getCreated()}">Test task name</td>
         <td th:text="${task.getDueDate()}">Test task name</td>
         <td><a th:href="@{'/editTask/' + ${task.getId()}}">Edit Task</a></td>
