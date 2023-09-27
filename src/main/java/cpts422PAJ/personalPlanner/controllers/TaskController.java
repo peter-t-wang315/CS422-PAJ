@@ -47,6 +47,26 @@ public class TaskController {
         }
     }
 
+    @RequestMapping("/addTask")
+    public String addTask(Model model) {
+        Task newTask = new Task();
+        newTask = taskService.save(newTask);
+//        System.out.println(newTask);
+        Long idActiveUser = userService.findActiveUser();
+        String newDueDate = null;
+        String createdTime = null;
+        model.addAttribute("newTask", newTask);
+        model.addAttribute("userId", idActiveUser);
+        model.addAttribute("newDueDate", newDueDate);
+        model.addAttribute("createdTime", createdTime);
+        if (idActiveUser == 0 ){
+            userService.logOffAllUsers();
+            return "redirect:/login";
+        }
+
+        return "addTask";
+    }
+
     @RequestMapping("/editTask/{taskId}")
     public String editTask(@PathVariable Long taskId, Model model) {
         Long idActiveUser = userService.findActiveUser();
@@ -60,8 +80,6 @@ public class TaskController {
         if (!idActiveUser.equals(current_task.getUserID())){
             return "redirect:/";
         }
-
-
         Long userId = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : "";

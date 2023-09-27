@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    *{
+      background: burlywood;
+      color: saddlebrown;
+      font-family: "courier New", monospace;
+    }
+    .head{
+      text-align: center;
+
+
+    }
+    .btn {
+      transition-duration: 0.4s;
+      border-color: saddlebrown;
+      border-radius: 8px;
+      margin-left: 90%;
+
+    }
+
+    .btn:hover {
+
+      background-color: saddlebrown;
+      color: white;
+    }
+  </style>
+  <title>Add Task</title>
+</head>
+<body>
+<h2 class="head">Add New Task</h2>
+<form action="" th:action="@{/updateTask}" th:object="${newTask}" method="post">
+  <p>New Task Name: <input th:field="*{taskName}" type="text" name="taskName" id="taskName" th:value="${taskName}"></p>
+
+  <label for="completed">Completion Status</label>
+  <input id="completed" type="checkbox" name="completed" th:checked="false" />
+  <p>New Note: <input th:field="*{note}" type="text" name="note" id="note" th:value="${note}"></p>
+  <label for="newDueDate">New Due Date</label>
+  <input type="datetime-local" name="newDueDate" id="newDueDate" th:value="${newDueDate}"/>
+
+  <input type="hidden" name="id" id="id" th:value="${newTask.getId()}">
+  <input type="hidden" name="createdTime" id="createdTime" th:value="${#dates.format(newTask.getCreated(), 'yyyy-MM-dd HH:mm:ss.SSS')}">
+  <input type="hidden" name="userId" id="userId" th:value="${userId}">
+  <p><input class="btn" type="submit" value="submit"></p>
+</form>
+</body>
+</html>

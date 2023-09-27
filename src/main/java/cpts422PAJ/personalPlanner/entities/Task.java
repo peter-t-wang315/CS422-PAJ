@@ -37,6 +37,12 @@ public class Task {
     }
 
     public Task() {
+        this.taskName = "";
+        this.completed = false;
+        this.note = "";
+        this.created = new Timestamp(System.currentTimeMillis());
+        this.dueDate = null;
+        this.u = null;
     }
 
     public void setId(Long id) {
