@@ -19,4 +19,5 @@ public interface UserService {
     public void logOffUser();
 
     public void logOffAllUsers();
+    public Boolean checkSameUser(String newUser);
 }

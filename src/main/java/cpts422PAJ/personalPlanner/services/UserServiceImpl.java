@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Users save(Users users) {
-        return null;
+        return userRepository.save(users);
     }
 
     public boolean isUser(String name, String pass){
@@ -101,9 +101,25 @@ public class UserServiceImpl implements UserService {
                 Users user = userRepository.findById(new Long(i+1)).get();
                 user.setCurrUser(false);
                 userRepository.save(user);
-
             }
         }
     }
+
+
+    public Boolean checkSameUser(String newUser){
+        List<String> users = new ArrayList<>();
+        userRepository.findAll().forEach(user -> users.add(user.getUserName()) );
+
+        for(int i = 0; i< users.size();i++){
+            if (newUser.equals(users.get(i)))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
 
 }
