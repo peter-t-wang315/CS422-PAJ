@@ -113,4 +113,8 @@ public class Task {
                 ", user=" + u +
                 '}';
     }
+
+    public Object getStatus() {
+        return null;
+    }
 }

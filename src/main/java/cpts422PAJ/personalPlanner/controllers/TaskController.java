@@ -16,7 +16,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class TaskController {
@@ -36,6 +38,34 @@ public class TaskController {
         try {
             Long idActiveUser = userService.findActiveUser();
             Users current_user = userService.getUserById(idActiveUser);
+            // Get tasks for the user
+            List<Task> allTasks = taskService.getTasksForUser(current_user);
+
+            // Separate tasks into categories: In Progress, Do Today, Due This Week
+            List<Task> inProgressTasks = new ArrayList<>();
+            List<Task> doTodayTasks = new ArrayList<>();
+            List<Task> dueThisWeekTasks = new ArrayList<>();
+
+            // current date for comparison
+            Date currentDate = new Date();
+
+            for (Task task : allTasks) {
+                if (task.getStatus().equals("In Progress")) {
+                    inProgressTasks.add(task);
+                } else if (task.getStatus().equals("To Do") && task.getDueDate() != null) {
+                    // Check if the task is due today
+                    Date dueDate = new Date(task.getDueDate().getTime());
+                    if (isSameDay(currentDate, dueDate)) {
+                        doTodayTasks.add(task);
+                    } else if (isDueThisWeek(currentDate, dueDate)) {
+                        dueThisWeekTasks.add(task);
+                    }
+                }
+            }
+
+            model.addAttribute("inProgressTasks", inProgressTasks);
+            model.addAttribute("doTodayTasks", doTodayTasks);
+            model.addAttribute("dueThisWeekTasks", dueThisWeekTasks);
             model.addAttribute("tasks", taskService.getTasksForUser(current_user));
             model.addAttribute("users", userService.findAll());
             return "index";
@@ -45,6 +75,31 @@ public class TaskController {
             userService.logOffAllUsers();
             return "redirect:/login";
         }
+    }
+
+    // Helper method to check if two dates are on the same day
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
+    // Helper method to check if the due date is within the current week
+    private boolean isDueThisWeek(Date currentDate, Date dueDate) {
+        Calendar calCurrent = Calendar.getInstance();
+        calCurrent.setTime(currentDate);
+        Calendar calDueDate = Calendar.getInstance();
+        calDueDate.setTime(dueDate);
+
+        int currentWeek = calCurrent.get(Calendar.WEEK_OF_YEAR);
+        int dueWeek = calDueDate.get(Calendar.WEEK_OF_YEAR);
+
+        return calCurrent.get(Calendar.YEAR) == calDueDate.get(Calendar.YEAR) && currentWeek == dueWeek;
     }
 
     @RequestMapping("/addTask")
