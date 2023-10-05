@@ -5,8 +5,7 @@ import cpts422PAJ.personalPlanner.entities.Tag;
 import java.util.List;
 
 public interface TagService {
-    List<Tag> findAll();
+    Iterable<Tag> findAll();
     Tag findById(Long id);
-    void save(Tag tag);
-    void deleteById(Long id);
+    Tag save(Tag tag);
 }

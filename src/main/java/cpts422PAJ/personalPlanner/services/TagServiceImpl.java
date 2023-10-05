@@ -1,27 +1,28 @@
 package cpts422PAJ.personalPlanner.services;
 
 import cpts422PAJ.personalPlanner.entities.Tag;
+import cpts422PAJ.personalPlanner.repositories.TagRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class TagServiceImpl implements TagService {
+
+    private TagRepository tagRepository;
     @Override
-    public List<Tag> findAll() {
-        return null;
+    public Iterable<Tag> findAll() {
+        return tagRepository.findAll();
     }
 
     @Override
     public Tag findById(Long id) {
-        return null;
+       return this.tagRepository.findById(id).get();
     }
 
     @Override
-    public void save(Tag tag) {
-
+    public Tag save(Tag tag) {
+        return tagRepository.save(tag);
     }
 
-    @Override
-    public void deleteById(Long id) {
-
-    }
 }

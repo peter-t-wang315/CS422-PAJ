@@ -10,4 +10,6 @@ import java.util.List;
 public interface TaskRepository extends CrudRepository<Task,Long> {
     @Query("SELECT t FROM Task t WHERE t.u.id = :userId")
     List<Task> findTasksByUserId(Long userId);
+    @Query("SELECT t FROM Task t WHERE t.tag.id = :tagId")
+    List<Task> findTasksByTagId(Long tagId);
 }

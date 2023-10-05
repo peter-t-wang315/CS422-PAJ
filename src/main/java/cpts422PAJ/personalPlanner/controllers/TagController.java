@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/tags")
 public class TagController {
 
     private final TagService tagService;
@@ -21,31 +20,24 @@ public class TagController {
     }
 
     // Display all tags
-    @GetMapping
+    @GetMapping("/tags/list")
     public String listTags(Model model) {
         model.addAttribute("tags", tagService.findAll());
         return "tags/list";
     }
 
     // Display form to create a new tag
-    @GetMapping("/create")
+    @GetMapping("/createtag")
     public String createTagForm(Model model) {
         model.addAttribute("tag", new Tag());
-        return "tags/create";
+        return "/create";
     }
 
     // Handle the creation of a new tag
     @PostMapping("/create")
     public String createTag(Tag tag) {
         tagService.save(tag);
-        return "redirect:/tags";
-    }
-
-    // Handle the deletion of a tag
-    @GetMapping("/delete")
-    public String deleteTag(@RequestParam Long id) {
-        tagService.deleteById(id);
-        return "redirect:/tags";
+        return "redirect:/";
     }
 
 }
