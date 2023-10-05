@@ -66,6 +66,10 @@
         <td th:text="${task.getDueDate()}">Test task name</td>
         <td><a th:href="@{'/editTask/' + ${task.getId()}}">Edit Task</a></td>
     </tr>
+    <tr th:each="task : ${tasks}">
+        <td th:text="${task.taskName}"></td>
+        <td th:text="${task.tag.name}"></td>
+    </tr>
     </tbody>
 </table>
 <br>

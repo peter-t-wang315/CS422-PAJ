@@ -21,19 +21,23 @@ public class Task {
 
     private Date dueDate;
 
+    @ManyToOne
+    private Tag tag;
+
 
     @ManyToOne
 //    @JoinColumn(name = "Users_id")
     private Users u;
 
 
-    public Task(String taskName, boolean completed, String note, Date dueDate, Users u) {
+    public Task(String taskName, boolean completed, String note, Date dueDate, Users u, Tag tag) {
         this.taskName = taskName;
         this.completed = completed;
         this.note = note;
         this.created = new Timestamp(System.currentTimeMillis());
         this.dueDate = dueDate;
         this.u = u;
+        this.tag = tag;
     }
 
     public Task() {
@@ -43,6 +47,7 @@ public class Task {
         this.created = new Timestamp(System.currentTimeMillis());
         this.dueDate = null;
         this.u = null;
+        this.tag = null;
     }
 
     public void setId(Long id) {
@@ -92,6 +97,8 @@ public class Task {
     public Long getUserID() { return u.getId(); }
 
     public Users getUser() { return u; }
+
+    public Tag getTag() { return tag; }
 
     public void setUser(Users u) {
         this.u = u;

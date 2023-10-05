@@ -24,6 +24,8 @@ public class TaskController {
 
     private UserService userService;
 
+
+
     public TaskController(TaskService taskService, UserService usersService) {
         this.taskService = taskService;
         this.userService = usersService;
@@ -38,6 +40,7 @@ public class TaskController {
             Users current_user = userService.getUserById(idActiveUser);
             model.addAttribute("tasks", taskService.getTasksForUser(current_user));
             model.addAttribute("users", userService.findAll());
+            model.addAttribute("tags", tagService.findAll());
             return "index";
         } catch (Exception e) {
             System.out.println(e.getMessage());
