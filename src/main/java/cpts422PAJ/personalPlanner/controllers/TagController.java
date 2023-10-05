@@ -19,22 +19,15 @@ public class TagController {
         this.tagService = tagService;
     }
 
-    // Display all tags
-    @GetMapping("/tags/list")
-    public String listTags(Model model) {
-        model.addAttribute("tags", tagService.findAll());
-        return "tags/list";
-    }
-
     // Display form to create a new tag
-    @GetMapping("/createtag")
-    public String createTagForm(Model model) {
+    @RequestMapping("/addTag")
+    public String addTag(Model model) {
         model.addAttribute("tag", new Tag());
         return "/create";
     }
 
     // Handle the creation of a new tag
-    @PostMapping("/create")
+    @RequestMapping("/create")
     public String createTag(Tag tag) {
         tagService.save(tag);
         return "redirect:/";
