@@ -1,7 +1,9 @@
 package cpts422PAJ.personalPlanner.controllers;
 
+import cpts422PAJ.personalPlanner.entities.Tag;
 import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.entities.Users;
+import cpts422PAJ.personalPlanner.services.TagService;
 import cpts422PAJ.personalPlanner.services.TaskService;
 import cpts422PAJ.personalPlanner.services.UserService;
 import org.apache.catalina.User;
@@ -25,9 +27,12 @@ public class TaskController {
 
     private UserService userService;
 
-    public TaskController(TaskService taskService, UserService usersService) {
+    private TagService tagService;
+
+    public TaskController(TaskService taskService, UserService usersService, TagService tagService) {
         this.taskService = taskService;
         this.userService = usersService;
+        this.tagService = tagService;
     }
 
     @RequestMapping("/")
@@ -73,6 +78,7 @@ public class TaskController {
         model.addAttribute("userId", idActiveUser);
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
+        model.addAttribute("allTags", tagService.findAll());
         if (idActiveUser == 0 ){
             userService.logOffAllUsers();
             return "redirect:/login";
@@ -99,6 +105,7 @@ public class TaskController {
         String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : "";
         String createdTime = null;
         model.addAttribute("currentTask", current_task);
+        model.addAttribute("allTags", tagService.findAll());
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
         model.addAttribute("userId", userId);
@@ -107,9 +114,11 @@ public class TaskController {
     }
 
     @RequestMapping("/updateTask")
-    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
+    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
         System.out.println(task);
         task.setUser(userService.getUserById(userId));
+        Tag selectedTag = tagService.findById(tagId);
+        task.setTag(selectedTag);
         DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         DateFormat createdDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {

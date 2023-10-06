@@ -1,5 +1,6 @@
 package cpts422PAJ.personalPlanner.services;
 
+import cpts422PAJ.personalPlanner.entities.Tag;
 import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.repositories.TaskRepository;
 import cpts422PAJ.personalPlanner.entities.Users;
@@ -29,7 +30,8 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> getTasksForUser(Users user) {
         return taskRepository.findTasksByUserId(user.getId());
     }
-
+    @Override
+    public List<Task> getTasksByTag(Tag tag) { return taskRepository.findTasksByTagId(tag.getId()); }
     @Override
     public Task getTaskById(Long id) {
         return taskRepository.findById(id).get();

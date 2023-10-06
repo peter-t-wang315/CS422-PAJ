@@ -51,6 +51,8 @@
         <th>Date Created</th>
         <br>
         <th>Due Date</th>
+        <br>
+        <th>Tag</th>
     </tr>
     </thead>
     <tbody>
@@ -65,13 +67,19 @@
 
         <td th:text="${task.getCreated()}">Test task name</td>
         <td th:text="${task.getDueDate()}">Test task name</td>
+        <td th:text="${task.getTagName()}">Test Tag name</td>
         <td><a th:href="@{'/editTask/' + ${task.getId()}}">Edit Task</a></td>
     </tr>
     </tbody>
 </table>
 <br>
 <form name="addTask" action="addTask" method="POST">
-    <input class="btn" type="submit" value="addTask">
+    <input class="btn" type="submit" value="Add task">
+</form>
+<br>
+<br>
+<form name="addTag" action="addTag" method="POST">
+    <input class="btn" type="submit" value="Add tag">
 </form>
 <br>
 <br>
