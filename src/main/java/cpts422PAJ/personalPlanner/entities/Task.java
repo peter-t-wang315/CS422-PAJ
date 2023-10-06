@@ -22,6 +22,7 @@ public class Task {
     private Date dueDate;
 
     @ManyToOne
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
 
@@ -109,6 +110,8 @@ public class Task {
     public void setCreated(Timestamp created){
         this.created = created;
     }
+
+    public void setTag(Tag tag) { this.tag = tag; }
 
     @Override
     public String toString() {

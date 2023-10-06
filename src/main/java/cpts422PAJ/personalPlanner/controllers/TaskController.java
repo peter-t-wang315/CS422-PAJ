@@ -91,6 +91,7 @@ public class TaskController {
         String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : "";
         String createdTime = null;
         model.addAttribute("currentTask", current_task);
+        model.addAttribute("allTags", tagService.findAll());
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
         model.addAttribute("userId", userId);
@@ -99,10 +100,11 @@ public class TaskController {
     }
 
     @RequestMapping("/updateTask")
-    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
+    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
         System.out.println(task);
         task.setUser(userService.getUserById(userId));
-        task.setTag(tagService.getTagById(tagId));
+        Tag selectedTag = tagService.findById(tagId);
+        task.setTag(selectedTag);
         DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         DateFormat createdDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {
