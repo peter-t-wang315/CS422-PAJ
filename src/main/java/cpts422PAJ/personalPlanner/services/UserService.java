@@ -19,5 +19,13 @@ public interface UserService {
     public void logOffUser();
 
     public void logOffAllUsers();
+
+
+    public boolean isCommonName(String usrName);
+    public boolean m_z(String lastName);
+
+    public Boolean notUnique();
+
     public Boolean checkSameUser(String newUser);
+
 }

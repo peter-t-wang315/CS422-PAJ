@@ -7,6 +7,7 @@ import cpts422PAJ.personalPlanner.entities.Users;
 import cpts422PAJ.personalPlanner.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,5 +42,13 @@ public class TaskServiceImpl implements TaskService {
 
         return taskRepository.save(task);
     }
+
+
+    public int amountOfTasks(){
+        List<String> currTasks = new ArrayList<>();
+        taskRepository.findAll().forEach(task -> currTasks.add(task.getTaskName()));
+        return currTasks.size();
+    }
+
 
 }
