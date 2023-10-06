@@ -100,6 +100,8 @@ public class Task {
 
     public Tag getTag() { return tag; }
 
+    public String getTagName() { return tag.getName(); }
+
     public void setUser(Users u) {
         this.u = u;
     }
@@ -118,6 +120,7 @@ public class Task {
                 ", created=" + created +
                 ", dueDate=" + dueDate +
                 ", user=" + u +
+                ", tag=" + tag +
                 '}';
     }
 }
