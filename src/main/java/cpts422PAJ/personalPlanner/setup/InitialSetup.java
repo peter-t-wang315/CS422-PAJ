@@ -31,9 +31,10 @@ public class InitialSetup implements CommandLineRunner {
 
         Users jon = new Users("jon.b@wsu.edu", "jonb", "pass","John", "Pore");
         Users jane = new Users("jane.doe@wsu.edu","jDoe", "123","jane", "Doe");
+//        Users jack = new Users("jack.doe@wsu.edu","jackd", "yer","jack", "Doe");
         jon = userRepository.save(jon);
         jane = userRepository.save(jane);
-
+//        jack = userRepository.save(jack);
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date date = dateFormat.parse(("25/09/2023"));

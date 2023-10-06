@@ -17,6 +17,7 @@
             transition-duration: 0.4s;
             border-color: saddlebrown;
             border-radius: 8px;
+            margin-left: 90%;
 
         }
 
@@ -25,42 +26,34 @@
             background-color: saddlebrown;
             color: white;
         }
+
         input{
             border-color: saddlebrown;
         }
-        .reg{
-            display: flex;
-            margin-right: 10px;
-        }
+
+
+
     </style>
-    <title>Login</title>
-    <h1 class="head">Welcome to our Planner application</h1>
-    <hr>
-    <hr>
+    <title>Register</title>
 
-
+    <h1 class="head">Register new user</h1>
 </head>
-
-<h2>Login Below:</h2>
-<!--<form action="http://localhost:8080/"> this makes it go to the main page-->
-<form name="loginInfo" action="loginInfo" method="POST">
-    <label>User name:</label><br>
+<body>
+<form name="registerUser" action="registerUser" method="POST">
+    <label>Email:</label><br>
+    <input type="text"  name="email"><br><br>
+    <label>First Name:</label><br>
+    <input type="text"  name="first"><br><br>
+    <label>Last Name:</label><br>
+    <input type="text"  name="last"><br><br>
+    <label>User Name:</label><br>
     <input type="text"  name="userName"><br><br>
     <label >Password:</label><br>
     <input type="text" name="passWord">
-    <input class="btn" type="submit" value="login">
+
+    <input class="btn" type="submit" value="Submit">
 
 </form>
-<br>
-<div class="reg">
-    not registered?
-
-    <form action="register">
-        <input class="btn" type="submit" value="register">
-    </form>
-</div>
-
-
 
 </body>
 </html>
