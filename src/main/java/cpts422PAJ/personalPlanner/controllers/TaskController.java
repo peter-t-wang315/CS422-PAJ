@@ -4,6 +4,7 @@ import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.entities.Users;
 import cpts422PAJ.personalPlanner.services.TaskService;
 import cpts422PAJ.personalPlanner.services.UserService;
+import org.apache.catalina.User;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,8 +51,20 @@ public class TaskController {
     @RequestMapping("/addTask")
     public String addTask(Model model) {
         Task newTask = new Task();
+        //my code
+//        Long idforUser = userService.findActiveUser();
+//        Users usr = userService.getUserById(idforUser);
+        //True if not unique
+        boolean not_unique = userService.notUnique();
+        if (not_unique){
+            if(taskService.amountOfTasks() >= 6){
+                return "redirect:/";
+            }
+        }
+
+        System.out.println(newTask);
         newTask = taskService.save(newTask);
-//        System.out.println(newTask);
+        System.out.println(newTask);
         Long idActiveUser = userService.findActiveUser();
         String newDueDate = null;
         String createdTime = null;

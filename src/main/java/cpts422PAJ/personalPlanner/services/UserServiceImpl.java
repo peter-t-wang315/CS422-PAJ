@@ -5,9 +5,7 @@ import cpts422PAJ.personalPlanner.repositories.UserRepository;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -105,5 +103,72 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
+    //This code checks if the user is common
+    public boolean isCommonName(String usrName){
+
+        Set<String> nameSet = new HashSet<String>();
+
+        nameSet.addAll(Arrays.asList(new String[]{
+        "John", "Michael", "Robert", "David", "James", "Mary",
+        "William", "Richard", "Thomas", "Linda", "Mark", "Charles",
+        "Joseph", "Patricia", "Barbara", "Jennifer", "Paul",
+        "Maria", "Susan", "Daniel"
+        }));
+
+        return nameSet.contains(usrName);
+
+
+    }
+
+    // This checks if the last name is
+    public boolean m_z(String lastName){
+
+        char firstLetter = lastName.charAt(0);
+
+        Set<Character> letterSet = new HashSet<Character>();
+
+        letterSet.addAll(Arrays.asList(new Character[]{
+                'M', 'N', 'O', 'P', 'Q','R', 'S', 'T', 'U',
+                'V', 'W', 'X', 'Y', 'Z'
+
+        }));
+
+
+        return letterSet.contains(firstLetter);
+
+    }
+
+
+    public Boolean notUnique(){
+        List<Boolean> currentUsers = new ArrayList<>();
+        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()) );
+        for (int i = 0; i< currentUsers.size();i++){
+            if (currentUsers.get(i) == true){
+                Users user = userRepository.findById(new Long(i+1)).get();
+                //this is the username
+                if(isCommonName(user.getFirstName())){
+                    if (m_z(user.getLastName())){
+                        return true;
+
+                    }
+                }
+
+                userRepository.save(user);
+
+            }
+        }
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+
 
 }
