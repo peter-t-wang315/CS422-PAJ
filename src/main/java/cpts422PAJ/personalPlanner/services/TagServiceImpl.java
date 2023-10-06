@@ -10,6 +10,12 @@ import java.util.List;
 public class TagServiceImpl implements TagService {
 
     private TagRepository tagRepository;
+
+    public TagServiceImpl(TagRepository tagRepository) {
+        this.tagRepository = tagRepository;
+    }
+
+
     @Override
     public Iterable<Tag> findAll() {
         return tagRepository.findAll();

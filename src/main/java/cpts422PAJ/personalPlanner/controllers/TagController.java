@@ -22,13 +22,15 @@ public class TagController {
     // Display form to create a new tag
     @RequestMapping("/addTag")
     public String addTag(Model model) {
-        model.addAttribute("tag", new Tag());
-        return "/create";
+        Tag newTag = new Tag();
+        newTag = tagService.save(newTag);
+        model.addAttribute("currentTag", newTag);
+        return "addTag";
     }
 
     // Handle the creation of a new tag
-    @RequestMapping("/create")
-    public String createTag(Tag tag) {
+    @RequestMapping("/saveTag")
+    public String saveTag(Tag tag) {
         tagService.save(tag);
         return "redirect:/";
     }

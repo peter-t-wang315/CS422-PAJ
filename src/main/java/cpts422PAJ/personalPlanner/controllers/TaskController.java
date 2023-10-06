@@ -2,7 +2,6 @@ package cpts422PAJ.personalPlanner.controllers;
 
 import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.entities.Users;
-import cpts422PAJ.personalPlanner.services.TagService;
 import cpts422PAJ.personalPlanner.services.TaskService;
 import cpts422PAJ.personalPlanner.services.UserService;
 import org.springframework.ui.Model;
@@ -25,8 +24,6 @@ public class TaskController {
 
     private UserService userService;
 
-    private TagService tagService;
-
     public TaskController(TaskService taskService, UserService usersService) {
         this.taskService = taskService;
         this.userService = usersService;
@@ -41,7 +38,6 @@ public class TaskController {
             Users current_user = userService.getUserById(idActiveUser);
             model.addAttribute("tasks", taskService.getTasksForUser(current_user));
             model.addAttribute("users", userService.findAll());
-           // model.addAttribute("tags", tagService.findAll());
             return "index";
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -63,7 +59,6 @@ public class TaskController {
         model.addAttribute("userId", idActiveUser);
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
-        model.addAttribute("tags", tagService.findAll());
         if (idActiveUser == 0 ){
             userService.logOffAllUsers();
             return "redirect:/login";
