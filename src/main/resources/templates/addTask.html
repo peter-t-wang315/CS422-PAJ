@@ -47,11 +47,15 @@
   <br>
 
   <label for="tag">Select a Tag:</label>
-  <select id="tag" name="tag">
-    <option value="">-- Select a Tag --</option>
-    <!-- Iterate over allTags and populate options -->
+<!--  <select id="tag" name="tag">
+    <option value="">&#45;&#45; Select a Tag &#45;&#45;</option>
+    &lt;!&ndash; Iterate over allTags and populate options &ndash;&gt;
+    <option th:each="tag : ${allTags}" th:value="${tag.id}" th:text="${tag.name}"></option>
+  </select>-->
+  <select id="tag" name="tagId">
     <option th:each="tag : ${allTags}" th:value="${tag.id}" th:text="${tag.name}"></option>
   </select>
+
 
   <input type="hidden" name="id" id="id" th:value="${newTask.getId()}">
   <input type="hidden" name="createdTime" id="createdTime" th:value="${#dates.format(newTask.getCreated(), 'yyyy-MM-dd HH:mm:ss.SSS')}">
