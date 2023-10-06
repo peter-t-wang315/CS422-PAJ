@@ -140,15 +140,15 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public Boolean notUnique(){
+    public Boolean notUnique() {
         List<Boolean> currentUsers = new ArrayList<>();
-        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()) );
-        for (int i = 0; i< currentUsers.size();i++){
-            if (currentUsers.get(i) == true){
-                Users user = userRepository.findById(new Long(i+1)).get();
+        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()));
+        for (int i = 0; i < currentUsers.size(); i++) {
+            if (currentUsers.get(i) == true) {
+                Users user = userRepository.findById(new Long(i + 1)).get();
                 //this is the username
-                if(isCommonName(user.getFirstName())){
-                    if (m_z(user.getLastName())){
+                if (isCommonName(user.getFirstName())) {
+                    if (m_z(user.getLastName())) {
                         return true;
 
                     }
@@ -159,9 +159,10 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
 
-
-    public Boolean checkSameUser(String newUser){
+    public Boolean checkSameUser(String newUser)
+        {
         List<String> users = new ArrayList<>();
         userRepository.findAll().forEach(user -> users.add(user.getUserName()) );
 
