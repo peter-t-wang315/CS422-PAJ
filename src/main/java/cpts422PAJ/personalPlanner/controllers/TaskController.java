@@ -1,7 +1,9 @@
 package cpts422PAJ.personalPlanner.controllers;
 
+import cpts422PAJ.personalPlanner.entities.Tag;
 import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.entities.Users;
+import cpts422PAJ.personalPlanner.services.TagService;
 import cpts422PAJ.personalPlanner.services.TaskService;
 import cpts422PAJ.personalPlanner.services.UserService;
 import org.springframework.ui.Model;
@@ -24,9 +26,12 @@ public class TaskController {
 
     private UserService userService;
 
-    public TaskController(TaskService taskService, UserService usersService) {
+    private TagService tagService;
+
+    public TaskController(TaskService taskService, UserService usersService, TagService tagService) {
         this.taskService = taskService;
         this.userService = usersService;
+        this.tagService = tagService;
     }
 
     @RequestMapping("/")
@@ -59,6 +64,7 @@ public class TaskController {
         model.addAttribute("userId", idActiveUser);
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
+        model.addAttribute("allTags", tagService.findAll());
         if (idActiveUser == 0 ){
             userService.logOffAllUsers();
             return "redirect:/login";

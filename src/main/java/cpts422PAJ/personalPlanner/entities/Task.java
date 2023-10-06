@@ -120,6 +120,7 @@ public class Task {
                 ", created=" + created +
                 ", dueDate=" + dueDate +
                 ", user=" + u +
+                ", tag=" + tag +
                 '}';
     }
 }

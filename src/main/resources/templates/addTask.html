@@ -43,10 +43,15 @@
   <label for="newDueDate">New Due Date</label>
   <input type="datetime-local" name="newDueDate" id="newDueDate" th:value="${newDueDate}"/>
 
-<!--  <label for="tag">Tag:</label>
+  <br>
+  <br>
+
+  <label for="tag">Select a Tag:</label>
   <select id="tag" name="tag">
-    <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.name}"></option>
-  </select>-->
+    <option value="">-- Select a Tag --</option>
+    <!-- Iterate over allTags and populate options -->
+    <option th:each="tag : ${allTags}" th:value="${tag.id}" th:text="${tag.name}"></option>
+  </select>
 
   <input type="hidden" name="id" id="id" th:value="${newTask.getId()}">
   <input type="hidden" name="createdTime" id="createdTime" th:value="${#dates.format(newTask.getCreated(), 'yyyy-MM-dd HH:mm:ss.SSS')}">
