@@ -68,13 +68,18 @@
     </tr>
     <tr th:each="task : ${tasks}">
         <td th:text="${task.taskName}"></td>
-        <td th:text="${task.tag.name}"></td>
+<!--        <td th:text="${task.tag.name}"></td>-->
     </tr>
     </tbody>
 </table>
 <br>
 <form name="addTask" action="addTask" method="POST">
-    <input class="btn" type="submit" value="addTask">
+    <input class="btn" type="submit" value="Add task">
+</form>
+<br>
+<br>
+<form name="addTag" action="addTag" method="POST">
+    <input class="btn" type="submit" value="Add tag">
 </form>
 <br>
 <br>

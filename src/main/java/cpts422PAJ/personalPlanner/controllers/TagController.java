@@ -22,9 +22,7 @@ public class TagController {
     // Display form to create a new tag
     @RequestMapping("/addTag")
     public String addTag(Model model) {
-        Tag newTag = new Tag();
-        newTag = tagService.save(newTag);
-        model.addAttribute("currentTag", newTag);
+        model.addAttribute("currentTag", new Tag());
         return "addTag";
     }
 
