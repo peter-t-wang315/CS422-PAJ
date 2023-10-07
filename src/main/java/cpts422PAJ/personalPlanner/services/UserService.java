@@ -24,7 +24,7 @@ public interface UserService {
     public boolean isCommonName(String usrName);
     public boolean m_z(String lastName);
 
-    public Boolean notUnique();
+    public Long notUnique();
 
     public Boolean checkSameUser(String newUser);
 

@@ -60,9 +60,14 @@ public class TaskController {
 //        Long idforUser = userService.findActiveUser();
 //        Users usr = userService.getUserById(idforUser);
         //True if not unique
-        boolean not_unique = userService.notUnique();
-        if (not_unique){
+        Long not_unique = userService.notUnique();
+        if (not_unique == 5){
             if(taskService.amountOfTasks() >= 6){
+                return "redirect:/";
+            }
+        }
+        else if(not_unique == 10){
+            if(taskService.amountOfTasks() >= 11){
                 return "redirect:/";
             }
         }

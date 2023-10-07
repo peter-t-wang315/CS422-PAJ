@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public Boolean notUnique() {
+    public Long notUnique() {
         List<Boolean> currentUsers = new ArrayList<>();
         userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()));
         for (int i = 0; i < currentUsers.size(); i++) {
@@ -149,16 +149,16 @@ public class UserServiceImpl implements UserService {
                 //this is the username
                 if (isCommonName(user.getFirstName())) {
                     if (m_z(user.getLastName())) {
-                        return true;
-
+                        return new Long(10);
                     }
+                    return new Long(5);
                 }
 
                 userRepository.save(user);
 
             }
         }
-        return false;
+        return  new Long(-1);
     }
 
     public Boolean checkSameUser(String newUser)
