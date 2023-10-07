@@ -17,6 +17,6 @@ public interface TaskService {
 
     public Task save(Task task);
 
-    public int amountOfTasks();
+    public int amountOfTasks(Long uId);
 
 }

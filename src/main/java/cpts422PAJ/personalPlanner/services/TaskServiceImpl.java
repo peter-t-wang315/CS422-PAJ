@@ -44,9 +44,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    public int amountOfTasks(){
-        List<String> currTasks = new ArrayList<>();
-        taskRepository.findAll().forEach(task -> currTasks.add(task.getTaskName()));
+    public int amountOfTasks(Long uId){
+        List<Task> currTasks = new ArrayList<>();
+        currTasks = taskRepository.findTasksByUserId(uId);
         return currTasks.size();
     }
 
