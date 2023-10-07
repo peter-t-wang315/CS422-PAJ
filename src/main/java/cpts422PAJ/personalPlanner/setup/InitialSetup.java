@@ -33,11 +33,13 @@ public class InitialSetup implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting DataBase....");
 
-        Users jon = new Users("jon.b@wsu.edu", "jonb", "pass","John", "Pore");
-        Users jane = new Users("jane.doe@wsu.edu","jDoe", "123","jane", "Doe");
+        Users jon = new Users("jon.barios.pore@wsu.edu", "jonb", "pass","John", "Pore");
+        Users jennifer = new Users("jennifer.doe@wsu.edu","jDoe", "123","Jennifer", "Doe");
+        Users sergio = new Users("sergio.ramos@wsu.edu", "ser", "ser", "Sergio", "Ramos");
 //        Users jack = new Users("jack.doe@wsu.edu","jackd", "yer","jack", "Doe");
         jon = userRepository.save(jon);
-        jane = userRepository.save(jane);
+        jennifer = userRepository.save(jennifer);
+        sergio = userRepository.save(sergio);
 //        jack = userRepository.save(jack);
 
         Tag none = new Tag("None");
@@ -51,17 +53,58 @@ public class InitialSetup implements CommandLineRunner {
 
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormat.parse(("25/09/2023"));
+        Date date = dateFormat.parse(("25/10/2023"));
         Task hw1 = new Task("homework1", false, "do this", date, jon,homework);
-        Task hw2 = new Task("homework2", false, "do this", date,jane,homework);
+        Task hw2 = new Task("homework2", false, "do this", date,jennifer,homework);
         Task hw3 = new Task("homework3", false, "do this", date,jon,life);
+        Task sergioHW = new Task("Sergios hw1", false, "do this", date, sergio, homework);
+        Task jonHW = new Task("Jons hw2", false, "do this", date, jon, homework);
+        Task jennifersTasks = new Task("Jennifers hw1", false, "do this", date, jennifer, homework);
 
         hw1 = taskRepository.save(hw1);
         hw2 = taskRepository.save(hw2);
         hw3 = taskRepository.save(hw3);
 
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw2", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw3", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw4", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw5", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw6", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw7", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios life stuff", false, "do this", date, sergio, life);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw9", false, "do this", date, sergio, homework);
+        sergioHW = taskRepository.save(sergioHW);
+        sergioHW = new Task("Sergios hw10", false, "do this", date, sergio, homework);
 
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon hw4", false, "do this", date, jon, homework);
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon nothing", false, "do this", date, jon, none);
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon hw6", false, "do this", date, jon, homework);
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon hw7", false, "do this", date, jon, homework);
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon Life stuff", false, "do this", date, jon, life);
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon Life stuff 2", false, "do this", date, jon, life);
+        jonHW = taskRepository.save(jonHW);
+        jonHW = new Task("Jon hw9", false, "do this", date, jon, homework);
 
+        jennifersTasks = taskRepository.save(jennifersTasks);
+        jennifersTasks = new Task("Jennifers hw2", false, "do this", date, jennifer, homework);
+        jennifersTasks = taskRepository.save(jennifersTasks);
+        jennifersTasks = new Task("Jennifers hw3", false, "do this", date, jennifer, homework);
+        jennifersTasks = taskRepository.save(jennifersTasks);
+        jennifersTasks = new Task("Jennifers nothing", false, "do this", date, jennifer, none);
 
         System.out.println(hw1);
         System.out.println(hw2);
