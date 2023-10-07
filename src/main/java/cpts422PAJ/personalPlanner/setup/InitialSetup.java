@@ -40,13 +40,13 @@ public class InitialSetup implements CommandLineRunner {
         jane = userRepository.save(jane);
 //        jack = userRepository.save(jack);
 
+        Tag none = new Tag("None");
         Tag homework = new Tag("Homework");
         Tag life = new Tag("Life");
-        Tag none = new Tag("None");
-
+        
+        none = tagRepository.save(none);
         homework = tagRepository.save(homework);
         life = tagRepository.save(life);
-        none = tagRepository.save(none);
 
 
 
