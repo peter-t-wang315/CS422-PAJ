@@ -76,25 +76,14 @@ public class LoginController {
             if(!adminPass.equals(adminPassword)){
                 isAdmin = false;
             }
+            else{
+                isAdmin = true;
+            }
         }
 
         Users newUser = new Users(email, username,password,firstName,lastName, isAdmin);
         System.out.println(email + " "+ username +" "+  password +" "+  username+" "+  firstName +" "+  lastName + " "+ isAdmin +" "+  adminPass);
-        //make a check here to call user and task services to give tasks to them
-        //we get the
-        if (isAdmin){
-            List<Task> taskList = new ArrayList<>();
-            Iterable<Task> taskIterable = taskService.findAll();
-            taskIterable.forEach(taskList::add);
-//            for (int i = 0; i< 2;i++){
-//                System.out.println(taskList.get(i));
-//                taskList.get(i);
-//            }
-            Task firstTask = taskList.get(0);
-            System.out.println(firstTask);
-            firstTask.setTaskName("Admin CHanged");
-            taskService.save(firstTask);
-        }
+
 
 
 

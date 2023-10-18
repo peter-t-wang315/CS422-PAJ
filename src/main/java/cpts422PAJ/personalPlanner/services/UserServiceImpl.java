@@ -147,14 +147,20 @@ public class UserServiceImpl implements UserService {
             if (currentUsers.get(i) == true) {
                 Users user = userRepository.findById(new Long(i + 1)).get();
                 //this is the username
-                if (isCommonName(user.getFirstName())) {
-                    if (m_z(user.getLastName())) {
-                        return new Long(10);
-                    }
-                    return new Long(5);
+                if (user.isAdmin()){
+                    return new Long(1000);
                 }
+                else {
 
-                userRepository.save(user);
+                    if (isCommonName(user.getFirstName())) {
+                        if (m_z(user.getLastName())) {
+                            return new Long(10);
+                        }
+                        return new Long(5);
+                    }
+
+                    userRepository.save(user);
+                }
 
             }
         }
@@ -199,7 +205,20 @@ public class UserServiceImpl implements UserService {
 //        for(int i = 0; i< usersSize; i++){
 //
 //        }
-//
+
+
+
+    }
+
+    public boolean checkIfAdmin(){
+        Long userIdLog = findActiveUser();
+        Users tempUsr = userRepository.findById(userIdLog).get();
+        //This means user is an admin
+        if(tempUsr.isAdmin()){
+            return true;
+        }else{ //this means that this user is not an admin
+            return false;
+        }
 
 
 
