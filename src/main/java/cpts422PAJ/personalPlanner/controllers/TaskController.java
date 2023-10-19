@@ -57,18 +57,19 @@ public class TaskController {
     @RequestMapping("/addTask")
     public String addTask(Model model) {
         Task newTask = new Task();
+        Long idActiveUser = userService.findActiveUser();
         //my code
 //        Long idforUser = userService.findActiveUser();
 //        Users usr = userService.getUserById(idforUser);
         //True if not unique
         Long not_unique = userService.notUnique();
         if (not_unique == 5){
-            if(taskService.amountOfTasks() >= 6){
+            if(taskService.amountOfTasks(idActiveUser) >= 5){
                 return "redirect:/";
             }
         }
         else if(not_unique == 10){
-            if(taskService.amountOfTasks() >= 11){
+            if(taskService.amountOfTasks(idActiveUser) >= 10){
                 return "redirect:/";
             }
         }
@@ -77,7 +78,6 @@ public class TaskController {
         System.out.println(newTask);
         newTask = taskService.save(newTask);
         System.out.println(newTask);
-        Long idActiveUser = userService.findActiveUser();
         String newDueDate = null;
         String createdTime = null;
         model.addAttribute("newTask", newTask);
