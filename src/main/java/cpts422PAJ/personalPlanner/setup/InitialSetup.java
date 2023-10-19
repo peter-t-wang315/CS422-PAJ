@@ -33,9 +33,9 @@ public class InitialSetup implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Starting DataBase....");
 
-        Users jon = new Users("jon.barios.pore@wsu.edu", "jonb", "pass","John", "Pore");
-        Users jennifer = new Users("jennifer.doe@wsu.edu","jDoe", "123","Jennifer", "Doe");
-        Users sergio = new Users("sergio.ramos@wsu.edu", "ser", "ser", "Sergio", "Ramos");
+        Users jon = new Users("jon.barios.pore@wsu.edu", "jonb", "pass","John", "Pore", false);
+        Users jennifer = new Users("jennifer.doe@wsu.edu","jDoe", "123","Jennifer", "Doe", false);
+        Users sergio = new Users("sergio.ramos@wsu.edu", "ser", "ser", "Sergio", "Ramos",false);
 //        Users jack = new Users("jack.doe@wsu.edu","jackd", "yer","jack", "Doe");
         jon = userRepository.save(jon);
         jennifer = userRepository.save(jennifer);

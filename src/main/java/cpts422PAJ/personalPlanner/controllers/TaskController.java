@@ -40,11 +40,19 @@ public class TaskController {
 //        System.out.println("In getTasks");
 //        Iterable<Users> all_users = userService.findAll();
         try {
-            Long idActiveUser = userService.findActiveUser();
-            Users current_user = userService.getUserById(idActiveUser);
-            model.addAttribute("tasks", taskService.getTasksForUser(current_user));
-            model.addAttribute("users", userService.findAll());
-            return "index";
+            //this means that it is an admin account
+            if (userService.checkIfAdmin()){
+                model.addAttribute("tasks", taskService.findAll());
+                model.addAttribute("users", userService.findAll());
+                return "index";
+            }else{ //this is a regular user
+                Long idActiveUser = userService.findActiveUser();
+                Users current_user = userService.getUserById(idActiveUser);
+                model.addAttribute("tasks", taskService.getTasksForUser(current_user));
+                model.addAttribute("users", userService.findAll());
+                return "index";
+            }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
 
@@ -69,6 +77,11 @@ public class TaskController {
         }
         else if(not_unique == 10){
             if(taskService.amountOfTasks(idActiveUser) >= 10){
+                return "redirect:/";
+            }
+        }
+        else if(not_unique == 1000){
+            if(taskService.amountOfTasks(idActiveUser) >= 1000){
                 return "redirect:/";
             }
         }
@@ -102,7 +115,11 @@ public class TaskController {
             userService.logOffAllUsers();
             return "redirect:/login";
         }
-        if (!idActiveUser.equals(current_task.getUserID())){
+
+        if (!idActiveUser.equals(current_task.getUserID()) && userService.checkIfAdmin()){
+            System.out.println("Bypass because admin");
+        }
+        else if (!idActiveUser.equals(current_task.getUserID()) && !userService.checkIfAdmin()){
             return "redirect:/";
         }
         Long userId = null;

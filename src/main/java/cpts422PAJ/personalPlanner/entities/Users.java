@@ -25,6 +25,28 @@ public class Users {
 
     private boolean currUser;
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    //If true it is an admin user and if it is a normal user
+    private boolean isAdmin;
+
+
+    public String getAdminPassword() {
+        return adminPassword;
+    }
+
+    private final String adminPassword = "GoCougs";
+
+
+
+
+    private  String userAdminPassword;
 
 //    @OneToMany
 //    private ArrayList<Task> tasks;
@@ -35,13 +57,14 @@ public class Users {
     private Long id;
 
 
-    public Users(String email, String userName, String userPassword,String firstName, String lastName) {
+    public Users(String email, String userName, String userPassword,String firstName, String lastName, Boolean isAdmin) {
         this.email = email;
         this.userName = userName;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userPassword = userPassword;
         this.currUser = false;
+        this.isAdmin = isAdmin;
 //        tasks = new ArrayList<Task>();
     }
 
@@ -53,6 +76,9 @@ public class Users {
 //        tasks.add(task);
 //    }
 
+    public Boolean checkAdmin(){
+        return adminPassword.equals(userAdminPassword);
+    }
 
 
     public String getEmail() {

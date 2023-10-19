@@ -147,14 +147,20 @@ public class UserServiceImpl implements UserService {
             if (currentUsers.get(i) == true) {
                 Users user = userRepository.findById(new Long(i + 1)).get();
                 //this is the username
-                if (isCommonName(user.getFirstName())) {
-                    if (m_z(user.getLastName())) {
-                        return new Long(10);
-                    }
-                    return new Long(5);
+                if (user.isAdmin()){
+                    return new Long(1000);
                 }
+                else {
 
-                userRepository.save(user);
+                    if (isCommonName(user.getFirstName())) {
+                        if (m_z(user.getLastName())) {
+                            return new Long(10);
+                        }
+                        return new Long(5);
+                    }
+
+                    userRepository.save(user);
+                }
 
             }
         }
@@ -176,6 +182,51 @@ public class UserServiceImpl implements UserService {
         return true;
 
     }
+
+    public String getAdminPassword(){
+        Users test = userRepository.findById(new Long(1)).get();
+        return test.getAdminPassword();
+    }
+
+    public void addAllTasksAdmin(){
+        //gets the active user
+        Users test = userRepository.findById(findActiveUser()).get();
+        //if the user is not an admin it returns
+        if (!test.isAdmin()){
+            return;
+        }
+        //This means that user is an admin
+        //this is to get it for a specific user
+//        List<Boolean> currentUsers = new ArrayList<>();
+//        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()));
+//        //users start at id 1
+//        int usersSize = currentUsers.size();
+//
+//        for(int i = 0; i< usersSize; i++){
+//
+//        }
+
+
+
+    }
+
+    public boolean checkIfAdmin(){
+        Long userIdLog = findActiveUser();
+        Users tempUsr = userRepository.findById(userIdLog).get();
+        //This means user is an admin
+        if(tempUsr.isAdmin()){
+            return true;
+        }else{ //this means that this user is not an admin
+            return false;
+        }
+
+
+
+
+    }
+
+
+
 
 
 
