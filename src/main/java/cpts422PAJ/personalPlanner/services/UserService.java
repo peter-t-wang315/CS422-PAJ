@@ -31,4 +31,6 @@ public interface UserService {
     public void addAllTasksAdmin();
     public boolean checkIfAdmin();
 
+    public Boolean notUniqueRedirection();
+
 }
