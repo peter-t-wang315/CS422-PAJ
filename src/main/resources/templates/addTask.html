@@ -55,11 +55,18 @@
   <select id="tag" name="tagId">
     <option th:each="tag : ${allTags}" th:value="${tag.id}" th:text="${tag.name}"></option>
   </select>
+  <br>
+
+  <label for="users">Select a User (Only for admin):</label>
+
+  <select id="users" name="userId">
+    <option th:each="users : ${allUserIds}" th:value="${users.id}" th:text="${users.firstName}"></option>
+  </select>
 
 
   <input type="hidden" name="id" id="id" th:value="${newTask.getId()}">
   <input type="hidden" name="createdTime" id="createdTime" th:value="${#dates.format(newTask.getCreated(), 'yyyy-MM-dd HH:mm:ss.SSS')}">
-  <input type="hidden" name="userId" id="userId" th:value="${userId}">
+<!--  <input type="hidden" name="userId" id="userId" th:value="${userId}">-->
   <p><input class="btn" type="submit" value="submit"></p>
 </form>
 </body>

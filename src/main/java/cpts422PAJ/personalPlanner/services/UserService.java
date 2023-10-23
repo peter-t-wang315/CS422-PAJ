@@ -27,5 +27,8 @@ public interface UserService {
     public Long notUnique();
 
     public Boolean checkSameUser(String newUser);
+    public String getAdminPassword();
+    public void addAllTasksAdmin();
+    public boolean checkIfAdmin();
 
 }

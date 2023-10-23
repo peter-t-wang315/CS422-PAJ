@@ -41,11 +41,19 @@ public class TaskController {
 //        System.out.println("In getTasks");
 //        Iterable<Users> all_users = userService.findAll();
         try {
-            Long idActiveUser = userService.findActiveUser();
-            Users current_user = userService.getUserById(idActiveUser);
-            model.addAttribute("tasks", taskService.getTasksForUser(current_user));
-            model.addAttribute("users", userService.findAll());
-            return "index";
+            //this means that it is an admin account
+            if (userService.checkIfAdmin()){
+                model.addAttribute("tasks", taskService.findAll());
+                model.addAttribute("users", userService.findAll());
+                return "index";
+            }else{ //this is a regular user
+                Long idActiveUser = userService.findActiveUser();
+                Users current_user = userService.getUserById(idActiveUser);
+                model.addAttribute("tasks", taskService.getTasksForUser(current_user));
+                model.addAttribute("users", userService.findAll());
+                return "index";
+            }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
 
@@ -58,9 +66,7 @@ public class TaskController {
     public String addTask(Model model) {
         Task newTask = new Task();
         Long idActiveUser = userService.findActiveUser();
-        //my code
-//        Long idforUser = userService.findActiveUser();
-//        Users usr = userService.getUserById(idforUser);
+
         //True if not unique
         Long not_unique = userService.notUnique();
         if (not_unique == 5){
@@ -73,6 +79,11 @@ public class TaskController {
                 return "redirect:/";
             }
         }
+        else if(not_unique == 1000){
+            if(taskService.amountOfTasks(idActiveUser) >= 1000){
+                return "redirect:/";
+            }
+        }
 
 
         System.out.println(newTask);
@@ -81,10 +92,14 @@ public class TaskController {
         String newDueDate = null;
         String createdTime = null;
         model.addAttribute("newTask", newTask);
-        model.addAttribute("userId", idActiveUser);
+
+
+        model.addAttribute("allUserIds", userService.findAll());
+
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
         model.addAttribute("allTags", tagService.findAll());
+
         if (idActiveUser == 0 ){
             userService.logOffAllUsers();
             return "redirect:/login";
@@ -103,7 +118,11 @@ public class TaskController {
             userService.logOffAllUsers();
             return "redirect:/login";
         }
-        if (!idActiveUser.equals(current_task.getUserID())){
+
+        if (!idActiveUser.equals(current_task.getUserID()) && userService.checkIfAdmin()){
+            System.out.println("Bypass because admin");
+        }
+        else if (!idActiveUser.equals(current_task.getUserID()) && !userService.checkIfAdmin()){
             return "redirect:/";
         }
         Long userId = null;
@@ -122,7 +141,14 @@ public class TaskController {
     @RequestMapping("/updateTask")
     public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
         System.out.println(task);
-        task.setUser(userService.getUserById(userId));
+        System.out.println("In updateeee");
+        if (userService.checkIfAdmin()){
+            task.setUser(userService.getUserById(userId));
+        }
+        else{
+            task.setUser(userService.getUserById(userService.findActiveUser()));
+        }
+
         Tag selectedTag = tagService.findById(tagId);
         task.setTag(selectedTag);
         DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
