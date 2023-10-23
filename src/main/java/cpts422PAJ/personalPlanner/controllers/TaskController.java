@@ -132,8 +132,8 @@ public class TaskController {
         model.addAttribute("allTags", tagService.findAll());
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
-        model.addAttribute("userId", userId);
-
+//        model.addAttribute("userId", userId);
+        model.addAttribute("allUserIds", userService.findAll());
         return "editTask";
     }
 
