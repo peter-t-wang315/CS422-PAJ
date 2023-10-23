@@ -65,9 +65,7 @@ public class TaskController {
     public String addTask(Model model) {
         Task newTask = new Task();
         Long idActiveUser = userService.findActiveUser();
-        //my code
-//        Long idforUser = userService.findActiveUser();
-//        Users usr = userService.getUserById(idforUser);
+
         //True if not unique
         Long not_unique = userService.notUnique();
         if (not_unique == 5){
@@ -93,10 +91,14 @@ public class TaskController {
         String newDueDate = null;
         String createdTime = null;
         model.addAttribute("newTask", newTask);
-        model.addAttribute("userId", idActiveUser);
+
+
+        model.addAttribute("allUserIds", userService.findAll());
+
         model.addAttribute("newDueDate", newDueDate);
         model.addAttribute("createdTime", createdTime);
         model.addAttribute("allTags", tagService.findAll());
+
         if (idActiveUser == 0 ){
             userService.logOffAllUsers();
             return "redirect:/login";
@@ -138,7 +140,14 @@ public class TaskController {
     @RequestMapping("/updateTask")
     public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
         System.out.println(task);
-        task.setUser(userService.getUserById(userId));
+        System.out.println("In updateeee");
+        if (userService.checkIfAdmin()){
+            task.setUser(userService.getUserById(userId));
+        }
+        else{
+            task.setUser(userService.getUserById(userService.findActiveUser()));
+        }
+
         Tag selectedTag = tagService.findById(tagId);
         task.setTag(selectedTag);
         DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
