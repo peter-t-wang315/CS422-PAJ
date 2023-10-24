@@ -4,6 +4,7 @@ import cpts422PAJ.personalPlanner.entities.Tag;
 import cpts422PAJ.personalPlanner.entities.Task;
 import cpts422PAJ.personalPlanner.entities.Users;
 
+import java.util.Date;
 import java.util.List;
 
 public interface TaskService {
@@ -19,4 +20,7 @@ public interface TaskService {
 
     public int amountOfTasks(Long uId);
 
+    public Date calculateNewDueDate(Task task);
+
+    public int getDueDateIncrement(String tagName);
 }

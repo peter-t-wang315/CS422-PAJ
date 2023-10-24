@@ -9,7 +9,7 @@ public class Tag {
     @GeneratedValue
     private Long id;
     private String name; // "Complete" or "Incomplete"
-    private int dueDate;
+    private Long dueDateIncrement;
 
     public Tag(String name) {
         this.name = name;
@@ -55,11 +55,11 @@ public class Tag {
         return Objects.hash(id, name);
     }
 
-    public int getDueDate() {
-        return dueDate;
+    public Long getDueDateIncrement() {
+        return dueDateIncrement;
     }
 
-    public void setDueDate(int dueDate) {
-        this.dueDate = dueDate;
+    public void setDueDateIncrement(Long dueDateIncrement) {
+        this.dueDateIncrement = dueDateIncrement;
     }
 }

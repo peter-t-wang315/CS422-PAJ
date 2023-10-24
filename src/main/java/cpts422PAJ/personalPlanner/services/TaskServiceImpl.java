@@ -9,7 +9,10 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -39,7 +42,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task save(Task task) {
-
+        Date newDueDate = calculateNewDueDate(task);
+        task.setDueDate(new Timestamp(newDueDate.getTime()));
         return taskRepository.save(task);
     }
 
@@ -49,6 +53,41 @@ public class TaskServiceImpl implements TaskService {
         currTasks = taskRepository.findTasksByUserId(uId);
         return currTasks.size();
     }
+
+    public Date calculateNewDueDate(Task task) {
+        Tag tag = task.getTag();
+        Date dueDate = task.getDueDate();
+
+        if (dueDate == null) {
+            dueDate = new Date();
+        }
+        if (tag != null && tag.getName() != null) {
+            int dueDateIncrement = getDueDateIncrement(tag.getName());
+            if (task.getDueDate() != null) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(task.getDueDate());
+                cal.add(Calendar.DAY_OF_MONTH, dueDateIncrement);
+                return new Date(cal.getTimeInMillis());
+            }
+        }
+        return task.getDueDate();
+    }
+
+    public int getDueDateIncrement(String tagName) {
+        switch (tagName) {
+            case "Homework":
+                return 7;
+            case "Work":
+                return 14;
+            case "Life":
+                return 3;
+            case "none":
+                return 0;
+            default:
+                return 0;
+        }
+    }
+
 
 
 }

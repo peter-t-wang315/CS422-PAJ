@@ -144,7 +144,7 @@ public class TaskController {
             Date parsedCreatedTime = createdDateFormat.parse(createdTime);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(parsedDueDate);
-            calendar.add(Calendar.DAY_OF_MONTH, selectedTag.getDueDate()); // Add the tag's dueDate value to the task's dueDate
+            //calendar.add(Calendar.DAY_OF_MONTH, selectedTag.getDueDate()); // Add the tag's dueDate value to the task's dueDate
             task.setDueDate(new Timestamp(calendar.getTimeInMillis()));
             task.setDueDate(new Timestamp(parsedDueDate.getTime()));
             task.setCreated(new Timestamp(parsedCreatedTime.getTime()));
