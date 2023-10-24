@@ -31,4 +31,10 @@ public interface UserService {
     public void addAllTasksAdmin();
     public boolean checkIfAdmin();
 
+    public Boolean notUniqueRedirection();
+    public Boolean checkAtSign(String email);
+
+    public Boolean checkDomains(String email);
+
+    public Boolean checkEmail(String email);
 }
