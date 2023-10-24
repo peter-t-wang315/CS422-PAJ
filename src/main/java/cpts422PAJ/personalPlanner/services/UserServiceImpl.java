@@ -3,6 +3,7 @@ package cpts422PAJ.personalPlanner.services;
 import cpts422PAJ.personalPlanner.entities.Users;
 import cpts422PAJ.personalPlanner.repositories.UserRepository;
 import org.apache.catalina.User;
+import org.hibernate.dialect.BooleanDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -195,18 +196,6 @@ public class UserServiceImpl implements UserService {
         if (!test.isAdmin()){
             return;
         }
-        //This means that user is an admin
-        //this is to get it for a specific user
-//        List<Boolean> currentUsers = new ArrayList<>();
-//        userRepository.findAll().forEach(users -> currentUsers.add(users.isCurrentUser()));
-//        //users start at id 1
-//        int usersSize = currentUsers.size();
-//
-//        for(int i = 0; i< usersSize; i++){
-//
-//        }
-
-
 
     }
 
@@ -240,6 +229,72 @@ public class UserServiceImpl implements UserService {
             }
         }
         return false;
+    }
+
+    public Boolean checkAtSign(String email){
+        if(email.indexOf("@") == -1){
+            System.out.println("There is no @ in the email");
+            return false;
+        }
+        else{
+            System.out.println("There is a @ in the email, you may continue!");
+            return true;
+        }
+
+    }
+
+    public Boolean checkDomains(String email){
+
+        Set<String> domainSet = new HashSet<String>();
+
+        domainSet.add("wsu.edu");
+        domainSet.add("gmail.com");
+        domainSet.add("aol.com");
+        domainSet.add("proton.me");
+        domainSet.add("icloud.com");
+        domainSet.add("yahoo.com");
+        domainSet.add("live.com");
+        domainSet.add("mail.ru");
+        domainSet.add("outlook.com");
+        domainSet.add("gmx.net");
+        domainSet.add("hotmail.com");
+        domainSet.add("mail.com");
+
+        for (String domain : domainSet){
+            System.out.println(domain);
+            if (email.contains(domain)){
+                System.out.println(email+ ' ' + domain);
+                return true;
+            }
+        }
+
+        return false;
+
+
+    }
+
+    public Boolean checkEmail(String email){
+        boolean signs = checkAtSign(email);
+        boolean domains = checkDomains(email);
+
+        if (signs && domains){
+            return true;
+        }
+        else if(!signs || !domains){
+            return false;
+        }
+        else if (!signs || domains){
+            return false;
+        }
+        else if (signs || !domains){
+            return false;
+        }
+        else{
+            return false;
+        }
+
+
+
     }
 
 
