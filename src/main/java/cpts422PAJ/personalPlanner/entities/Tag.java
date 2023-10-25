@@ -9,6 +9,7 @@ public class Tag {
     @GeneratedValue
     private Long id;
     private String name; // "Complete" or "Incomplete"
+    private Long dueDateIncrement;
 
     public Tag(String name) {
         this.name = name;
@@ -52,5 +53,13 @@ public class Tag {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public Long getDueDateIncrement() {
+        return dueDateIncrement;
+    }
+
+    public void setDueDateIncrement(Long dueDateIncrement) {
+        this.dueDateIncrement = dueDateIncrement;
     }
 }
