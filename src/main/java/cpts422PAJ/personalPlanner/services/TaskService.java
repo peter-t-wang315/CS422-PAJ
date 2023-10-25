@@ -19,4 +19,10 @@ public interface TaskService {
 
     public int amountOfTasks(Long uId);
 
+    public boolean isAlliteration(String input);
+
+    public int uniquenessCalculator(Long uniqueness);
+
+    public boolean characterCountOver8(String input);
+
 }
