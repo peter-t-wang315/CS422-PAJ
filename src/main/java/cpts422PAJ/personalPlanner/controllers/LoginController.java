@@ -63,33 +63,40 @@ public class LoginController {
     @RequestMapping(value = "/registerUser", method = RequestMethod.POST)
     public String registerUser(@RequestParam("email") String email, @RequestParam("userName") String username,
                                @RequestParam("passWord") String password,  @RequestParam("first") String firstName,
-                               @RequestParam("last") String lastName, @RequestParam("admin") Boolean isAdmin,
+                               @RequestParam("last") String lastName,
                                @RequestParam("adminPassword") String adminPass){
 
+        System.out.println("This is the password:" + "|"+ adminPass+"|");
+        boolean isAdminTemp = false;
 
         if(!userService.checkSameUser(username)){
 
             return "register";
         }
-        if (isAdmin){
+
             String adminPassword = userService.getAdminPassword();
             if(!adminPass.equals(adminPassword)){
-                isAdmin = false;
+                System.out.println("Not an admin!");
+                isAdminTemp = false;
             }
             else{
-                isAdmin = true;
+                System.out.println("An admin account!");
+                isAdminTemp = true;
             }
+
+
+        if(userService.checkEmail(email)){
+            System.out.println("valid email");
+        }
+        else{
+            return "register";
         }
 
-        Users newUser = new Users(email, username,password,firstName,lastName, isAdmin);
-        System.out.println(email + " "+ username +" "+  password +" "+  username+" "+  firstName +" "+  lastName + " "+ isAdmin +" "+  adminPass);
 
-
-
+        Users newUser = new Users(email, username,password,firstName,lastName, isAdminTemp);
+        System.out.println(email + " "+ username +" "+  password +" "+  username+" "+  firstName +" "+  lastName + " "+ isAdminTemp +" "+  adminPass);
 
         userService.save(newUser);
-
-
 
         return "redirect:/";
     }

@@ -30,6 +30,7 @@ public interface UserService {
     public String getAdminPassword();
     public void addAllTasksAdmin();
     public boolean checkIfAdmin();
-
-
+    public Boolean checkAtSign(String email);
+    public Boolean checkDomains(String email);
+    public Boolean checkEmail(String email);
 }
