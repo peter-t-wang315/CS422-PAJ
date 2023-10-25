@@ -66,13 +66,24 @@ public class TaskController {
         Task newTask = new Task();
         Long idActiveUser = userService.findActiveUser();
 
-        Boolean not_unique = userService.notUniqueRedirection();
-        if (not_unique) {
-            return "redirect:/";
+        //True if not unique
+        Long not_unique = userService.notUnique();
+        if (not_unique == 5){
+            if(taskService.amountOfTasks(idActiveUser) >= 5){
+                return "redirect:/";
+            }
         }
-        else {
-            System.out.println("They unique yuh");
+        else if(not_unique == 10){
+            if(taskService.amountOfTasks(idActiveUser) >= 10){
+                return "redirect:/";
+            }
         }
+        else if(not_unique == 1000){
+            if(taskService.amountOfTasks(idActiveUser) >= 1000){
+                return "redirect:/";
+            }
+        }
+
 
         System.out.println(newTask);
         newTask = taskService.save(newTask);

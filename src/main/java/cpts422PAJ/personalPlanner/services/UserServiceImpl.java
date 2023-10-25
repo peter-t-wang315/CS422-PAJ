@@ -11,10 +11,7 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
-    private TaskService taskService;
-
-    public UserServiceImpl(UserRepository userRepository, TaskService taskService) {
-        this.taskService = taskService;
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -219,27 +216,6 @@ public class UserServiceImpl implements UserService {
         }else{ //this means that this user is not an admin
             return false;
         }
-    }
-
-    public Boolean notUniqueRedirection() {
-        Long not_unique = notUnique();
-        Long idActiveUser = findActiveUser();
-        if (not_unique == 5){
-            if(taskService.amountOfTasks(idActiveUser) >= 5){
-                return true;
-            }
-        }
-        else if(not_unique == 10){
-            if(taskService.amountOfTasks(idActiveUser) >= 10){
-                return true;
-            }
-        }
-        else if(not_unique == 1000){
-            if(taskService.amountOfTasks(idActiveUser) >= 1000){
-                return true;
-            }
-        }
-        return false;
     }
 
 
