@@ -36,10 +36,12 @@ public class InitialSetup implements CommandLineRunner {
         Users jon = new Users("jon.barios.pore@wsu.edu", "jonb", "pass","John", "Pore", false);
         Users jennifer = new Users("jennifer.doe@wsu.edu","jDoe", "123","Jennifer", "Doe", false);
         Users sergio = new Users("sergio.ramos@wsu.edu", "ser", "ser", "Sergio", "Ramos",false);
+        Users admin = new Users("admin@gmail.com", "admin", "admin", "admin", "admin", true);
 //        Users jack = new Users("jack.doe@wsu.edu","jackd", "yer","jack", "Doe");
         jon = userRepository.save(jon);
         jennifer = userRepository.save(jennifer);
         sergio = userRepository.save(sergio);
+        admin = userRepository.save(admin);
 //        jack = userRepository.save(jack);
 
         Tag none = new Tag("None");
@@ -53,10 +55,10 @@ public class InitialSetup implements CommandLineRunner {
 
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormat.parse(("25/10/2023"));
+        Date date = dateFormat.parse(("14/11/2023"));
         Task hw1 = new Task("homework1", false, "do this", date, jon,homework);
-        Task hw2 = new Task("homework2", false, "do this", date,jennifer,homework);
-        Task hw3 = new Task("homework3", false, "do this", date,jon,life);
+        Task hw2 = new Task("homework2", false, "do this", date, jennifer,homework);
+        Task hw3 = new Task("homework3", false, "do this", date, jon,life);
         Task sergioHW = new Task("Sergios hw1", false, "do this", date, sergio, homework);
         Task jonHW = new Task("Jons hw2", false, "do this", date, jon, homework);
         Task jennifersTasks = new Task("Jennifers hw1", false, "do this", date, jennifer, homework);
