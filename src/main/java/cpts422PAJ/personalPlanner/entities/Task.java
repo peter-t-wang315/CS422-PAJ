@@ -21,6 +21,8 @@ public class Task {
 
     private Date dueDate;
 
+    private Date manuallySetDueDate;
+
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
@@ -38,6 +40,7 @@ public class Task {
         this.created = new Timestamp(System.currentTimeMillis());
         this.dueDate = dueDate;
         this.u = u;
+        this.manuallySetDueDate = dueDate;
         this.tag = tag;
     }
 
@@ -48,6 +51,7 @@ public class Task {
         this.created = new Timestamp(System.currentTimeMillis());
         this.dueDate = null;
         this.u = null;
+        this.manuallySetDueDate = null;
         this.tag = null;
     }
 
@@ -121,9 +125,18 @@ public class Task {
                 ", completed=" + completed +
                 ", note='" + note + '\'' +
                 ", created=" + created +
+                ", manualDueDate=" + manuallySetDueDate +
                 ", dueDate=" + dueDate +
                 ", user=" + u +
                 ", tag=" + tag +
                 '}';
+    }
+
+    public Date getManuallySetDueDate() {
+        return manuallySetDueDate;
+    }
+
+    public void setManuallySetDueDate(Date manuallySetDueDate) {
+        this.manuallySetDueDate = manuallySetDueDate;
     }
 }

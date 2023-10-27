@@ -91,9 +91,12 @@ public class TaskController {
         System.out.println(newTask);
         String newDueDate = null;
         String createdTime = null;
+        String newManuallySetDueDate = null;
         model.addAttribute("newTask", newTask);
         model.addAttribute("allUserIds", userService.findAll());
         model.addAttribute("newDueDate", newDueDate);
+        model.addAttribute("originalDueDate", newDueDate);
+        model.addAttribute("newManuallySetDueDate", newManuallySetDueDate);
         model.addAttribute("createdTime", createdTime);
         model.addAttribute("allTags", tagService.findAll());
 
@@ -125,10 +128,14 @@ public class TaskController {
         Long userId = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : "";
+        String newManuallySetDueDate = (current_task.getManuallySetDueDate() != null) ? dateFormat.format(current_task.getManuallySetDueDate()) : "";
+        String originalDueDate = newDueDate;
         String createdTime = null;
         model.addAttribute("currentTask", current_task);
         model.addAttribute("allTags", tagService.findAll());
         model.addAttribute("newDueDate", newDueDate);
+        model.addAttribute("originalDueDate", originalDueDate);
+        model.addAttribute("newManuallySetDueDate", newManuallySetDueDate);
         model.addAttribute("createdTime", createdTime);
 //        model.addAttribute("userId", userId);
         model.addAttribute("allUserIds", userService.findAll());
@@ -136,13 +143,12 @@ public class TaskController {
     }
 
     @RequestMapping("/updateTask")
-    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, Model model) {
+    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, @RequestParam String originalDueDate, @RequestParam String newManuallySetDueDate, Model model) {
         System.out.println(task);
         System.out.println("In updateeee");
-        if (userService.checkIfAdmin()){
+        if (userService.checkIfAdmin()) {
             task.setUser(userService.getUserById(userId));
-        }
-        else{
+        } else {
             task.setUser(userService.getUserById(userService.findActiveUser()));
         }
 
@@ -150,18 +156,67 @@ public class TaskController {
         task.setTag(selectedTag);
         DateFormat dueDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         DateFormat createdDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+        // Create the createdTime of the task
+        Date parsedCreatedTime = null;
         try {
-            Date parsedDueDate = dueDateFormat.parse(newDueDate);
-            Date parsedCreatedTime = createdDateFormat.parse(createdTime);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(parsedDueDate);
-            //calendar.add(Calendar.DAY_OF_MONTH, selectedTag.getDueDate()); // Add the tag's dueDate value to the task's dueDate
-            task.setDueDate(new Timestamp(calendar.getTimeInMillis()));
-            task.setDueDate(new Timestamp(parsedDueDate.getTime()));
-            task.setCreated(new Timestamp(parsedCreatedTime.getTime()));
+            parsedCreatedTime = createdDateFormat.parse(createdTime);
         } catch (ParseException e) {
-            System.out.println("Broken datetimes");
+            throw new RuntimeException(e);
         }
+
+        Date parsedManuallySetDueDate = null;
+        if (newManuallySetDueDate == "") {
+            System.out.println("There is no manually set due date");
+        } else {
+            try {
+                parsedManuallySetDueDate = dueDateFormat.parse(newManuallySetDueDate);
+                task.setManuallySetDueDate(parsedManuallySetDueDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // Due date is being messed up because when there is nothing, this doesn't run properly
+        // Have a check for if the dueDate is being updated even if the originalDueDate is empty;
+        Date parsedDueDate = null;
+        if (newDueDate == "") {
+            System.out.println("There is no new due date");
+        } else {
+            try {
+                parsedDueDate = dueDateFormat.parse(newDueDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        Date parsedOriginalDueDate = null;
+        if (originalDueDate == "") {
+            System.out.println("There is no original due date");
+        } else {
+            try {
+                parsedOriginalDueDate = dueDateFormat.parse(originalDueDate);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println(task);
+        // If the originalDueDate is nothing but the user has now manually changed the date
+        if (parsedOriginalDueDate == null && parsedDueDate != null) {
+            task.setManuallySetDueDate(parsedDueDate);
+        }
+        // If the newDueDate is different than the originalDueDate that means that the user has updated the due date
+        else if (parsedDueDate != null && !parsedDueDate.equals(parsedOriginalDueDate)) {
+            task.setManuallySetDueDate(parsedDueDate);
+        }
+
+        if (parsedDueDate != null) {
+            task.setDueDate(new Timestamp(parsedDueDate.getTime()));
+        }
+        else {
+            task.setDueDate(null);
+        }
+        task.setCreated(new Timestamp(parsedCreatedTime.getTime()));
         taskService.save(task);
         return "redirect:/";
     }

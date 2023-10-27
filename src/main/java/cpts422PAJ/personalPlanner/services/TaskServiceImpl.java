@@ -49,7 +49,13 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task save(Task task) {
         Date newDueDate = calculateNewDueDate(task);
-        task.setDueDate(new Timestamp(newDueDate.getTime()));
+        if (newDueDate == null) {
+            System.out.println("There is no current due date");
+            task.setDueDate(null);
+        }
+        else {
+            task.setDueDate(new Timestamp(newDueDate.getTime()));
+        }
         // Admins have free range
         if (userService.checkIfAdmin()) {
             return taskRepository.save(task);
@@ -158,18 +164,30 @@ public class TaskServiceImpl implements TaskService {
 
     public Date calculateNewDueDate(Task task) {
         Tag tag = task.getTag();
-        Date dueDate = task.getDueDate();
 
-        if (dueDate == null) {
-            dueDate = new Date();
+        // If the user creates a due date, this should trump everything else
+        if (task.getManuallySetDueDate() != null) {
+            return task.getManuallySetDueDate();
         }
-        if (tag != null && tag.getName() != null) {
+        // If the user doesn't create a due date, add auto generated due dates based on tags
+        if (tag != null) {
             int dueDateIncrement = getDueDateIncrement(tag.getName());
-            if (task.getDueDate() != null) {
+            // If the task has any tag that isn't the None tag, we must give it the due date increment
+            if (dueDateIncrement != 0) {
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(task.getDueDate());
+                cal.setTime(task.getCreated());
+                cal.set(Calendar.HOUR_OF_DAY, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
                 cal.add(Calendar.DAY_OF_MONTH, dueDateIncrement);
                 return new Date(cal.getTimeInMillis());
+            }
+            // If the task has the None tag, kill the due date
+            else {
+                System.out.println("The task doesn't have a due date meaning that it will be auto assigned one");
+                return null;
+
             }
         }
         return task.getDueDate();
@@ -183,7 +201,7 @@ public class TaskServiceImpl implements TaskService {
                 return 14;
             case "Life":
                 return 3;
-            case "none":
+            case "None":
                 return 0;
             default:
                 return 0;
