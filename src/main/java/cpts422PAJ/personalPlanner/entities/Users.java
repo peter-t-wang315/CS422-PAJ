@@ -72,14 +72,6 @@ public class Users {
 
     }
 
-//    public void addTask(Task task){
-//        tasks.add(task);
-//    }
-
-    public Boolean checkAdmin(){
-        return adminPassword.equals(userAdminPassword);
-    }
-
 
     public String getEmail() {
         return email;
@@ -113,22 +105,9 @@ public class Users {
         this.lastName = lastName;
     }
 
-
-
-
-//    public ArrayList<Task> getTasks() {
-//        return tasks;
-//    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Long getId() {
         return id;
     }
-
-
     @Override
     public String toString() {
         return "Users{" +
@@ -140,23 +119,7 @@ public class Users {
                 ", id=" + id +
                 '}';
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Users users = (Users) o;
-        return currUser == users.currUser && Objects.equals(email, users.email) && Objects.equals(userName, users.userName) && Objects.equals(firstName, users.firstName) && Objects.equals(lastName, users.lastName) && Objects.equals(userPassword, users.userPassword) && Objects.equals(id, users.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(email, userName, firstName, lastName, userPassword, currUser, id);
-    }
-
-    public void setCurrUser(boolean currUser) {
+    public void setCurrUser(boolean currUser){
         this.currUser = currUser;
     }
-
-
 }
