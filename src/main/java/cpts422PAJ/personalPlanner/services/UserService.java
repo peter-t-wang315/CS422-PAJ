@@ -28,7 +28,7 @@ public interface UserService {
 
     public Boolean checkSameUser(String newUser);
     public String getAdminPassword();
-    public void addAllTasksAdmin();
+
     public boolean checkIfAdmin();
     public Boolean checkAtSign(String email);
     public Boolean checkDomains(String email);
