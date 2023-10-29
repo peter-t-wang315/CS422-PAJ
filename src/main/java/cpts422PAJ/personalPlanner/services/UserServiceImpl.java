@@ -159,8 +159,11 @@ public class UserServiceImpl implements UserService {
                         }
                         return new Long(5);
                     }
+                    else{
+                        return new Long(-1);
+                    }
 
-                    userRepository.save(user);
+//                    userRepository.save(user);
                 }
             }
         }
@@ -186,25 +189,21 @@ public class UserServiceImpl implements UserService {
         return test.getAdminPassword();
     }
 
-    public void addAllTasksAdmin(){
-        //gets the active user
-        Users test = userRepository.findById(findActiveUser()).get();
-        //if the user is not an admin it returns
-        if (!test.isAdmin()){
-            return;
-        }
 
-    }
 
     public boolean checkIfAdmin(){
         Long userIdLog = findActiveUser();
+        if(userIdLog == 0L){
+            return false;
+        }
         Users tempUsr = userRepository.findById(userIdLog).get();
+
         //This means user is an admin
         if(tempUsr.isAdmin()){
             return true;
-        }else{ //this means that this user is not an admin
-            return false;
         }
+
+        return false;
     }
 
     public Boolean checkAtSign(String email){
@@ -256,13 +255,7 @@ public class UserServiceImpl implements UserService {
         if (signs && domains){
             return true;
         }
-        else if(!signs || !domains){
-            return false;
-        }
-        else if (!signs || domains){
-            return false;
-        }
-        else if (signs || !domains){
+        else if (!signs && domains){
             return false;
         }
         else{
@@ -272,15 +265,5 @@ public class UserServiceImpl implements UserService {
 
 
     }
-
-
-
-
-
-
-
-
-
-
 
 }
