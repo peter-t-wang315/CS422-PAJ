@@ -51,8 +51,6 @@ class TaskServiceImplTest {
     @InjectMocks
     private TaskServiceImpl taskService;
 
-
-
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -162,13 +160,37 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void saveTestCharacterCountMediumUnique() {
+    void saveTestCharacterCountMediumUniqueZ() {
         // This will be the acceptable route
         when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
         when(userService.checkIfAdmin()).thenReturn(false);
         when(userService.notUnique()).thenReturn(10L);
         when(tagService.findAll()).thenReturn(List.of(none, homework));
         when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaaza");
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestCharacterCountMediumUniqueW() {
+        // This will be the acceptable route
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(10L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaawa");
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestCharacterCountMediumUniqueX() {
+        // This will be the acceptable route
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(10L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaaxa");
         taskService.save(taskMock);
         verify(taskRepository).save(taskMock);
     }
@@ -246,6 +268,40 @@ class TaskServiceImplTest {
     }
 
     @Test
+    void saveTestDueDateNull() {
+        // This is acceptable as there is no due date
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(5L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("due date");
+        when(taskMock.getDueDate()).thenReturn(null);
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestDueDateAfterCurrentTime() {
+        // This is acceptable as user is max unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(5L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("due date");
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        Date currentDate = new Date(currentTime.getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.DAY_OF_MONTH, 100);
+        // Get the new due date as a Date object
+        Date newDueDate = calendar.getTime();
+        when(taskMock.getDueDate()).thenReturn(newDueDate);
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+
+    @Test
     void findAllTest() {
         taskService.findAll();
         verify(taskRepository).findAll();
@@ -315,9 +371,12 @@ class TaskServiceImplTest {
 
     @Test
     void getDueDateIncrementTest() {
+        assertEquals(7, taskService.getDueDateIncrement("Homework"));
         assertEquals(14, taskService.getDueDateIncrement("Work"));
         assertEquals(3, taskService.getDueDateIncrement("Life"));
-        assertEquals(0, taskService.getDueDateIncrement("dks"));
+        assertEquals(0, taskService.getDueDateIncrement("None"));
+        assertEquals(0, taskService.getDueDateIncrement("Unknown"));
+        assertEquals(0, taskService.getDueDateIncrement("homework"));
     }
 
     @Test
@@ -327,6 +386,8 @@ class TaskServiceImplTest {
         // Enter for loop
         // if, if, if
         assertTrue(taskService.isAlliteration("sad siwjf oijds soiwje soiw"));
+
+        assertFalse(taskService.isAlliteration("123 asf soifj"));
     }
 
     @Test
@@ -334,10 +395,14 @@ class TaskServiceImplTest {
         // if
         assertTrue(taskService.characterCountOver8(""));
 
+        assertTrue(taskService.characterCountOver8(null));
+
         // Nif if
         assertTrue(taskService.characterCountOver8("jijiiiiiiiiiiiii"));
 
         // Nif else
         assertFalse(taskService.characterCountOver8("jkh"));
+
+        assertFalse(taskService.characterCountOver8("1o!/23213oj:`{}#$%*^%&$#@!23"));
     }
 }
