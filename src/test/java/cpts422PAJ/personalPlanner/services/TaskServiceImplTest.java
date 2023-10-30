@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.Timestamp;
@@ -19,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,11 +31,18 @@ class TaskServiceImplTest {
     @Mock
     private TaskRepository taskRepository;
     @Mock
-    private Task task;
+    private Task taskMock;
     @Mock
-    private Tag tag;
+    private Tag tagMock;
+    @Mock
+    private UserServiceImpl userService;
+    @Mock
+    private TagServiceImpl tagService;
+    @Mock
+    private Users users;
     private Users jon;
     private Tag none;
+    private Tag homework;
     private Date date;
     private Task jonHW1;
     private Task jonHW2;
@@ -45,8 +55,10 @@ class TaskServiceImplTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.initMocks(this);
         jon = new Users("jon.barios.pore@wsu.edu", "jonb", "pass","John", "Pore", false);
         none = new Tag("None");
+        homework = new Tag("Homework");
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         date = null;
         try {
@@ -84,7 +96,180 @@ class TaskServiceImplTest {
     }
 
     @Test
-    void save() {
+    void saveTestAdmin() {
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(date);
+        when(userService.checkIfAdmin()).thenReturn(true);
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestLongName() {
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(0L);
+        when(taskMock.getTaskName()).thenReturn("oaisjfoiwjefioajiwofeiowfaefawef");
+        taskService.save(taskMock);
+        verify(taskRepository, times(0)).save(taskMock);
+    }
+
+    @Test
+    void saveTestAlliterationUnique() {
+        // Acceptable task as it is alliteration but the user is unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(10L);
+        when(taskMock.getTaskName()).thenReturn("this this this this");
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestAlliterationNotUnique() {
+        // Not acceptable task as it is alliteration and user isn't unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(5L);
+        when(taskMock.getTaskName()).thenReturn("this this this this");
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        taskService.save(taskMock);
+        verify(taskRepository, times(0)).save(taskMock);
+    }
+
+    @Test
+    void saveTestTagNameUnique() {
+        // Acceptable task as user is unique enough to name tasks same as tags
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(-1L);
+        when(taskMock.getTaskName()).thenReturn("None");
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestTagNameNotUnique() {
+        // Not acceptable task as user is unique enough to name tasks same as tags
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(10L);
+        when(taskMock.getTaskName()).thenReturn("None");
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        taskService.save(taskMock);
+        verify(taskRepository, times(0)).save(taskMock);
+    }
+
+    @Test
+    void saveTestCharacterCountMediumUnique() {
+        // This will be the acceptable route
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(10L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaaza");
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestCharacterCountMediumUnique2() {
+        // This will be the unacceptable route
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(10L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaaa");
+        taskService.save(taskMock);
+        verify(taskRepository,times(0)).save(taskMock);
+    }
+
+    @Test
+    void saveTestCharacterCountMaxUnique() {
+        // This is acceptable as user is max unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(-1L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaaa");
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestCharacterCountNotUnique() {
+        // This is unacceptable as user is not unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(5L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("asaaaaaaaaaaa");
+        taskService.save(taskMock);
+        verify(taskRepository, times(0)).save(taskMock);
+    }
+
+    @Test
+    void saveTestDueDateUnique() {
+        // This is acceptable as user is max unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(-1L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("due date");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -100);
+        // Get the new due date as a Date object
+        Date newDueDate = calendar.getTime();
+        when(taskMock.getDueDate()).thenReturn(newDueDate);
+        taskService.save(taskMock);
+        verify(taskRepository).save(taskMock);
+    }
+
+    @Test
+    void saveTestDueDateNotUnique() {
+        // This is acceptable as user is max unique
+        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);
+        when(userService.checkIfAdmin()).thenReturn(false);
+        when(userService.notUnique()).thenReturn(5L);
+        when(tagService.findAll()).thenReturn(List.of(none, homework));
+        when(taskMock.getTaskName()).thenReturn("due date");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -100);
+        // Get the new due date as a Date object
+        Date newDueDate = calendar.getTime();
+        when(taskMock.getDueDate()).thenReturn(newDueDate);
+        taskService.save(taskMock);
+        verify(taskRepository, times(0)).save(taskMock);
+    }
+
+    @Test
+    void findAllTest() {
+        taskService.findAll();
+        verify(taskRepository).findAll();
+    }
+
+    @Test
+    void getTasksForUserTest() {
+        when(users.getId()).thenReturn(1L);
+        taskService.getTasksForUser(users);
+        verify(taskRepository).findTasksByUserId(users.getId());
+    }
+
+    @Test
+    void getTaksByTagTest() {
+        when(tagMock.getId()).thenReturn(1L);
+        taskService.getTasksByTag(tagMock);
+        verify(taskRepository).findTasksByTagId(tagMock.getId());
+    }
+
+    @Test
+    void getTaskByIdTest() {
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(jonHW1));
+        taskService.getTaskById(1L);
+        verify(taskRepository).findById(1L);
     }
 
     @Test
@@ -101,35 +286,58 @@ class TaskServiceImplTest {
 
     @Test
     void calculateNewDueDateTest() {
-        when(task.getManuallySetDueDate()).thenReturn(date);
-        assertEquals(date, taskService.calculateNewDueDate(jonHW1));
+        reset(taskMock);
+        when(taskMock.getManuallySetDueDate()).thenReturn(date);
+        assertEquals(date, taskService.calculateNewDueDate(taskMock));
 
         // Missing the first if statement and then going into the second and third if statement
         Timestamp created = Timestamp.valueOf("2002-01-01 00:00:00");
-        when(task.getManuallySetDueDate()).thenReturn(null);
-        when(task.getCreated()).thenReturn(created);
-        when(tag.getName()).thenReturn("Homework");
+        when(taskMock.getManuallySetDueDate()).thenReturn(null);
+        when(taskMock.getCreated()).thenReturn(created);
+        when(taskMock.getTag()).thenReturn(tagMock);
+        when(tagMock.getName()).thenReturn("Homework");
         Calendar expected = Calendar.getInstance();
         expected.setTime(created);
         expected.add(Calendar.DAY_OF_MONTH, 7);
-        assertEquals(new Date(expected.getTimeInMillis()), taskService.calculateNewDueDate(jonHW1));
+        assertEquals(new Date(expected.getTimeInMillis()), taskService.calculateNewDueDate(taskMock));
 
+        // Nif, if, else
+        when(taskMock.getManuallySetDueDate()).thenReturn(null);
+        when(taskMock.getTag()).thenReturn(tagMock);
+        when(tagMock.getName()).thenReturn("None");
+        assertNull(taskService.calculateNewDueDate(taskMock));
 
-
-
-
-
+        // Nif, else
+        when(taskMock.getTag()).thenReturn(null);
+        when(taskMock.getDueDate()).thenReturn(date);
+        assertEquals(date, taskService.calculateNewDueDate(taskMock));
     }
 
     @Test
     void getDueDateIncrementTest() {
+        assertEquals(14, taskService.getDueDateIncrement("Work"));
+        assertEquals(3, taskService.getDueDateIncrement("Life"));
+        assertEquals(0, taskService.getDueDateIncrement("dks"));
     }
 
     @Test
     void isAlliterationTest() {
+        // Don't enter for loop
+        assertFalse(taskService.isAlliteration(""));
+        // Enter for loop
+        // if, if, if
+        assertTrue(taskService.isAlliteration("sad siwjf oijds soiwje soiw"));
     }
 
     @Test
     void characterCountOver8Test() {
+        // if
+        assertTrue(taskService.characterCountOver8(""));
+
+        // Nif if
+        assertTrue(taskService.characterCountOver8("jijiiiiiiiiiiiii"));
+
+        // Nif else
+        assertFalse(taskService.characterCountOver8("jkh"));
     }
 }
