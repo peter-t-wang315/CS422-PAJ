@@ -36,9 +36,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksForUser(Users user) {
-        return taskRepository.findTasksByUserId(user.getId());
-    }
+    public List<Task> getTasksForUser(Users user) { return taskRepository.findTasksByUserId(user.getId());}
     @Override
     public List<Task> getTasksByTag(Tag tag) { return taskRepository.findTasksByTagId(tag.getId()); }
     @Override

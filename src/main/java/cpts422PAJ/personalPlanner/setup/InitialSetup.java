@@ -127,6 +127,5 @@ public class InitialSetup implements CommandLineRunner {
 //        letterSet.contains(firstLetter);
 
         System.out.println(letterSet.contains(firstLetter));
-
     }
 }
