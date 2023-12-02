@@ -55,7 +55,7 @@ public class InitialSetup implements CommandLineRunner {
 
 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormat.parse(("14/11/2023"));
+        Date date = dateFormat.parse(("14/12/2023"));
         Task hw1 = new Task("homework1", false, "do this", date, jon,homework);
         Task hw2 = new Task("homework2", false, "do this", date, jennifer,homework);
         Task hw3 = new Task("homework3", false, "do this", date, jon,life);
