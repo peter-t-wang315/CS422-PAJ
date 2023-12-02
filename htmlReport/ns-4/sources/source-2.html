@@ -1,0 +1,378 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TaskServiceImpl</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cpts422PAJ.personalPlanner.services</a>
+</div>
+
+<h1>Coverage Summary for Class: TaskServiceImpl (cpts422PAJ.personalPlanner.services)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TaskServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (78/78)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (117/117)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cpts422PAJ.personalPlanner.services;
+&nbsp;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Tag;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Task;
+&nbsp;import cpts422PAJ.personalPlanner.repositories.TaskRepository;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Users;
+&nbsp;import cpts422PAJ.personalPlanner.repositories.UserRepository;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import javax.swing.*;
+&nbsp;import java.awt.*;
+&nbsp;import java.sql.Timestamp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Calendar;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;import java.util.stream.Collectors;
+&nbsp;import java.util.stream.StreamSupport;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class TaskServiceImpl implements TaskService {
+&nbsp;    private TaskRepository taskRepository;
+&nbsp;    private UserService userService;
+&nbsp;
+&nbsp;    private TagService tagService;
+&nbsp;
+<b class="fc">&nbsp;    public TaskServiceImpl(TaskRepository taskRepository, UserService userService, TagService tagService) {</b>
+<b class="fc">&nbsp;        this.userService = userService;</b>
+<b class="fc">&nbsp;        this.taskRepository = taskRepository;</b>
+<b class="fc">&nbsp;        this.tagService = tagService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Iterable&lt;Task&gt; findAll() {
+<b class="fc">&nbsp;        return taskRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+<b class="fc">&nbsp;    public List&lt;Task&gt; getTasksForUser(Users user) { return taskRepository.findTasksByUserId(user.getId());}</b>
+&nbsp;    @Override
+<b class="fc">&nbsp;    public List&lt;Task&gt; getTasksByTag(Tag tag) { return taskRepository.findTasksByTagId(tag.getId()); }</b>
+&nbsp;    @Override
+&nbsp;    public Task getTaskById(Long id) {
+<b class="fc">&nbsp;        return taskRepository.findById(id).get();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Task save(Task task) {
+<b class="fc">&nbsp;        Date newDueDate = calculateNewDueDate(task);</b>
+<b class="fc">&nbsp;        if (newDueDate == null) {</b>
+<b class="fc">&nbsp;            System.out.println(&quot;There is no current due date&quot;);</b>
+<b class="fc">&nbsp;            task.setDueDate(null);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            task.setDueDate(new Timestamp(newDueDate.getTime()));</b>
+&nbsp;        }
+&nbsp;        // Admins have free range
+<b class="fc">&nbsp;        if (userService.checkIfAdmin()) {</b>
+<b class="fc">&nbsp;            return taskRepository.save(task);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Long uniqueness = userService.notUnique();</b>
+<b class="fc">&nbsp;        int uniquenessLevel = uniquenessCalculator(uniqueness);</b>
+<b class="fc">&nbsp;        String taskName = task.getTaskName().toLowerCase();</b>
+&nbsp;        // If the task name is longer than 30 characters it isn&#39;t allowed
+<b class="fc">&nbsp;        if (taskName.length() &gt; 30) {</b>
+<b class="fc">&nbsp;            System.out.println(&quot;This task name is too long&quot;);</b>
+<b class="fc">&nbsp;            return task;</b>
+&nbsp;        }
+&nbsp;        // Can&#39;t save tasks that use alliteration. This is because all of the words start with
+&nbsp;        // the same letter which isn&#39;t unique
+&nbsp;        // Nested if: If the user is ANY unique it doesn&#39;t matter
+<b class="fc">&nbsp;        else if (isAlliteration(taskName)) {</b>
+<b class="fc">&nbsp;            if (uniquenessLevel &gt; 0) {</b>
+<b class="fc">&nbsp;                System.out.println(&quot;Is alliteration but user is unique&quot;);</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="fc">&nbsp;                System.out.println(&quot;This task is using alliteration which is not unique&quot;);</b>
+<b class="fc">&nbsp;                return task;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        // Can&#39;t save tasks if they are the same name as a tag
+&nbsp;        // Nested if: If the user is MAX unique it doesn&#39;t matter
+<b class="fc">&nbsp;        int tagNameFlag = 0;</b>
+<b class="fc">&nbsp;        for (Tag tag : tagService.findAll()) {</b>
+<b class="fc">&nbsp;            if (tag.getName().toLowerCase().equals(taskName)) {</b>
+<b class="fc">&nbsp;                if (uniquenessLevel == 2) {</b>
+<b class="fc">&nbsp;                    System.out.println(&quot;User is max unique so this is fine&quot;);</b>
+&nbsp;                }
+&nbsp;                else {
+<b class="fc">&nbsp;                    System.out.println(&quot;CANNOT SAVE: Task has the same name as a tag&quot;);</b>
+<b class="fc">&nbsp;                    tagNameFlag = 1;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        if (tagNameFlag == 0) {</b>
+<b class="fc">&nbsp;            System.out.println(&quot;Task is not tag name, can be saved&quot;);</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            return task;</b>
+&nbsp;        }
+&nbsp;        // If a task uses any letter more than 8 times, it can&#39;t be saved
+&nbsp;        // Nested if: If the user is ANY unique but it has the letter&#39;s W, X, Z in it, it doesn&#39;t matter
+&nbsp;        // Nested if: If the user is MAX unique it doesn&#39;t matter
+<b class="fc">&nbsp;        if (characterCountOver8(taskName)) {</b>
+<b class="fc">&nbsp;            if (uniquenessLevel == 1) {</b>
+<b class="fc">&nbsp;                if (taskName.contains(String.valueOf(&#39;w&#39;)) || taskName.contains(String.valueOf(&#39;x&#39;)) || taskName.contains(String.valueOf(&#39;z&#39;))) {</b>
+<b class="fc">&nbsp;                    System.out.println(&quot;Task has too many of the same letter but contains a W, X, or Z&quot;);</b>
+&nbsp;                }
+&nbsp;                else {
+<b class="fc">&nbsp;                    System.out.println(&quot;CANNOT SAVE: Task has too many of the same letters without a w,x, or z&quot;);</b>
+<b class="fc">&nbsp;                    return task;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            else if (uniquenessLevel == 2) {</b>
+<b class="fc">&nbsp;                System.out.println(&quot;Task has too many of the same letter but is unique&quot;);</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="fc">&nbsp;                System.out.println(&quot;CANNOT SAVE: Task has too many of the same letter&quot;);</b>
+<b class="fc">&nbsp;                return task;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        // If a task is made past due date, it can&#39;t be saved
+&nbsp;        // Nested if: If the user is MAX uniqueness it doesn&#39;t matter
+<b class="fc">&nbsp;        Timestamp currentTime = new Timestamp(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;        if (task.getDueDate() != null &amp;&amp; currentTime.after(task.getDueDate()))</b>
+&nbsp;        {
+<b class="fc">&nbsp;            if (uniquenessLevel == 2) {</b>
+<b class="fc">&nbsp;                System.out.println(&quot;Task overdue but user is unique&quot;);</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="fc">&nbsp;                System.out.println(&quot;CANNOT SAVE: Task it is after due date&quot;);</b>
+<b class="fc">&nbsp;                return task;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        System.out.println(&quot;They did not violate any rules&quot;);</b>
+<b class="fc">&nbsp;        task = taskRepository.save(task);</b>
+<b class="fc">&nbsp;        return task;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int uniquenessCalculator(Long uniqueness) {
+<b class="fc">&nbsp;        if (uniqueness == 5) {</b>
+&nbsp;            // LOW
+<b class="fc">&nbsp;            return 0;</b>
+&nbsp;        }
+&nbsp;        // Past this line is ANY uniqueness
+<b class="fc">&nbsp;        else if (uniqueness == 10){</b>
+&nbsp;            // MID
+<b class="fc">&nbsp;            return 1;</b>
+&nbsp;        }
+&nbsp;        else {
+&nbsp;            // MAX
+<b class="fc">&nbsp;            return 2;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public int amountOfTasks(Long uId){
+<b class="fc">&nbsp;        List&lt;Task&gt; currTasks = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        currTasks = taskRepository.findTasksByUserId(uId);</b>
+<b class="fc">&nbsp;        return currTasks.size();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Date calculateNewDueDate(Task task) {
+<b class="fc">&nbsp;        Tag tag = task.getTag();</b>
+&nbsp;
+&nbsp;        // If the user creates a due date, this should trump everything else
+<b class="fc">&nbsp;        if (task.getManuallySetDueDate() != null) {</b>
+<b class="fc">&nbsp;            return task.getManuallySetDueDate();</b>
+&nbsp;        }
+&nbsp;        // If the user doesn&#39;t create a due date, add auto generated due dates based on tags
+<b class="fc">&nbsp;        if (tag != null) {</b>
+<b class="fc">&nbsp;            int dueDateIncrement = getDueDateIncrement(tag.getName());</b>
+&nbsp;            // If the task has any tag that isn&#39;t the None tag, we must give it the due date increment
+<b class="fc">&nbsp;            if (dueDateIncrement != 0) {</b>
+<b class="fc">&nbsp;                Calendar cal = Calendar.getInstance();</b>
+<b class="fc">&nbsp;                cal.setTime(task.getCreated());</b>
+<b class="fc">&nbsp;                cal.set(Calendar.HOUR_OF_DAY, 0);</b>
+<b class="fc">&nbsp;                cal.set(Calendar.MINUTE, 0);</b>
+<b class="fc">&nbsp;                cal.set(Calendar.SECOND, 0);</b>
+<b class="fc">&nbsp;                cal.set(Calendar.MILLISECOND, 0);</b>
+<b class="fc">&nbsp;                cal.add(Calendar.DAY_OF_MONTH, dueDateIncrement);</b>
+<b class="fc">&nbsp;                return new Date(cal.getTimeInMillis());</b>
+&nbsp;            }
+&nbsp;            // If the task has the None tag, kill the due date
+&nbsp;            else {
+<b class="fc">&nbsp;                System.out.println(&quot;The task doesn&#39;t have a due date meaning that it will be auto assigned one&quot;);</b>
+<b class="fc">&nbsp;                return null;</b>
+&nbsp;
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return task.getDueDate();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getDueDateIncrement(String tagName) {
+<b class="fc">&nbsp;        if (tagName.equals(&quot;Homework&quot;)) {</b>
+<b class="fc">&nbsp;            return 7;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        else if (tagName.equals(&quot;Work&quot;)) {</b>
+<b class="fc">&nbsp;            return 14;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        else if (tagName.equals(&quot;Life&quot;)) {</b>
+<b class="fc">&nbsp;            return 3;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        else if (tagName.equals(&quot;None&quot;)) {</b>
+<b class="fc">&nbsp;            return 0;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public boolean isAlliteration(String input) {
+&nbsp;        // Create a character array to store counts of each letter
+<b class="fc">&nbsp;        int[] letterCounts = new int[26];</b>
+&nbsp;
+&nbsp;        // Split the input string into words
+<b class="fc">&nbsp;        String[] words = input.split(&quot;\\s+&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        for (String word : words) {</b>
+<b class="fc">&nbsp;            if (!word.isEmpty()) {</b>
+<b class="fc">&nbsp;                char firstLetter = Character.toLowerCase(word.charAt(0));</b>
+<b class="fc">&nbsp;                if (Character.isLetter(firstLetter)) {</b>
+<b class="fc">&nbsp;                    int index = firstLetter - &#39;a&#39;;</b>
+<b class="fc">&nbsp;                    letterCounts[index]++;</b>
+<b class="fc">&nbsp;                    if (letterCounts[index] &gt; 3) {</b>
+<b class="fc">&nbsp;                        return true;</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return false;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean characterCountOver8(String input) {
+<b class="fc">&nbsp;        if (input == null || input.isEmpty()) {</b>
+<b class="fc">&nbsp;            return true;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        int[] charCount = new int[26];</b>
+<b class="fc">&nbsp;        input = input.toLowerCase();</b>
+&nbsp;
+<b class="fc">&nbsp;        for (int i = 0; i &lt; input.length(); i++) {</b>
+<b class="fc">&nbsp;            char c = input.charAt(i);</b>
+<b class="fc">&nbsp;            if (c &gt;= &#39;a&#39; &amp;&amp; c &lt;= &#39;z&#39;) {</b>
+<b class="fc">&nbsp;                int index = c - &#39;a&#39;;</b>
+<b class="fc">&nbsp;                charCount[index]++;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        int maxCount = 0;</b>
+<b class="fc">&nbsp;        for (int count : charCount) {</b>
+<b class="fc">&nbsp;            if (count &gt; maxCount) {</b>
+<b class="fc">&nbsp;                maxCount = count;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        
+<b class="fc">&nbsp;        if (maxCount &gt; 8) {</b>
+<b class="fc">&nbsp;            return true;</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 13:25</div>
+</div>
+</body>
+</html>

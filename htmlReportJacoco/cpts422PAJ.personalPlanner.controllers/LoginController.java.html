@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoginController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">All in personalPlanner Coverage Results</a> &gt; <a href="index.source.html" class="el_package">cpts422PAJ.personalPlanner.controllers</a> &gt; <span class="el_source">LoginController.java</span></div><h1>LoginController.java</h1><pre class="source lang-java linenums">package cpts422PAJ.personalPlanner.controllers;
+
+
+import cpts422PAJ.personalPlanner.entities.Task;
+import cpts422PAJ.personalPlanner.entities.Users;
+import cpts422PAJ.personalPlanner.services.TaskService;
+import cpts422PAJ.personalPlanner.services.UserService;
+import org.apache.catalina.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.sql.PseudoColumnUsage;
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller
+public class LoginController {
+
+    private UserService userService;
+    private TaskService taskService;
+
+
+<span class="fc" id="L24">    public LoginController(UserService userService, TaskService taskService) {</span>
+<span class="fc" id="L25">        this.userService = userService;</span>
+<span class="fc" id="L26">        this.taskService = taskService;</span>
+<span class="fc" id="L27">    }</span>
+
+    @RequestMapping(&quot;/login&quot;)
+    public String getUsers(Model model){
+<span class="fc" id="L31">        model.addAttribute(&quot;userNames&quot;, userService.findAll());</span>
+
+<span class="fc" id="L33">        return &quot;login.html&quot;;</span>
+    }
+
+    @RequestMapping(value = &quot;/loginInfo&quot;, method = RequestMethod.POST)
+    public String getUsername(@RequestParam(&quot;userName&quot;) String username, @RequestParam(&quot;passWord&quot;) String password){
+//        System.out.println(username + &quot; &quot; + password);
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (userService.isUser(username,password) == false){</span>
+
+<span class="fc" id="L41">            return &quot;login&quot;;</span>
+        }
+<span class="fc" id="L43">        userService.changeUserActivity(username,password);</span>
+
+<span class="fc" id="L45">        return &quot;redirect:/&quot;;</span>
+
+    }
+
+    //could make a controller just for this, seems unnecesary without other functionalities
+    @RequestMapping(value= &quot;/logOut&quot;, method = RequestMethod.POST)
+    public String logOut(){
+<span class="fc" id="L52">        userService.logOffUser();</span>
+<span class="fc" id="L53">        return &quot;redirect:/login&quot;;</span>
+    }
+
+    @RequestMapping(value=&quot;/register&quot;)
+    public String register(){
+
+
+<span class="fc" id="L60">        return &quot;register.html&quot;;</span>
+    }
+
+    @RequestMapping(value = &quot;/registerUser&quot;, method = RequestMethod.POST)
+    public String registerUser(@RequestParam(&quot;email&quot;) String email, @RequestParam(&quot;userName&quot;) String username,
+                               @RequestParam(&quot;passWord&quot;) String password,  @RequestParam(&quot;first&quot;) String firstName,
+                               @RequestParam(&quot;last&quot;) String lastName,
+                               @RequestParam(&quot;adminPassword&quot;) String adminPass){
+
+<span class="fc" id="L69">        System.out.println(&quot;This is the password:&quot; + &quot;|&quot;+ adminPass+&quot;|&quot;);</span>
+<span class="fc" id="L70">        boolean isAdminTemp = false;</span>
+
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if(!userService.checkSameUser(username)){</span>
+
+<span class="fc" id="L74">            return &quot;register&quot;;</span>
+        }
+
+<span class="fc" id="L77">            String adminPassword = userService.getAdminPassword();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">            if(!adminPass.equals(adminPassword)){</span>
+<span class="fc" id="L79">                System.out.println(&quot;Not an admin!&quot;);</span>
+<span class="fc" id="L80">                isAdminTemp = false;</span>
+            }
+            else{
+<span class="fc" id="L83">                System.out.println(&quot;An admin account!&quot;);</span>
+<span class="fc" id="L84">                isAdminTemp = true;</span>
+            }
+
+
+<span class="fc bfc" id="L88" title="All 2 branches covered.">        if(userService.checkEmail(email)){</span>
+<span class="fc" id="L89">            System.out.println(&quot;valid email&quot;);</span>
+        }
+        else{
+<span class="fc" id="L92">            return &quot;register&quot;;</span>
+        }
+
+
+<span class="fc" id="L96">        Users newUser = new Users(email, username,password,firstName,lastName, isAdminTemp);</span>
+<span class="fc" id="L97">        System.out.println(email + &quot; &quot;+ username +&quot; &quot;+  password +&quot; &quot;+  username+&quot; &quot;+  firstName +&quot; &quot;+  lastName + &quot; &quot;+ isAdminTemp +&quot; &quot;+  adminPass);</span>
+
+<span class="fc" id="L99">        userService.save(newUser);</span>
+
+<span class="fc" id="L101">        return &quot;redirect:/&quot;;</span>
+    }
+
+
+
+
+
+
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

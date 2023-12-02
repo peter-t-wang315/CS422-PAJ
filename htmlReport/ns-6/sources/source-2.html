@@ -1,0 +1,93 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TaskRepository</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cpts422PAJ.personalPlanner.repositories</a>
+</div>
+
+<h1>Coverage Summary for Class: TaskRepository (cpts422PAJ.personalPlanner.repositories)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+</tr>
+  <tr>
+    <td class="name">TaskRepository$MockitoMock$V8oKFDCC</td>
+  </tr>
+  <tr>
+    <td class="name">TaskRepository$MockitoMock$V8oKFDCC$auxiliary$aiMl3kP3</td>
+  </tr>
+  <tr>
+    <td class="name">TaskRepository$MockitoMock$V8oKFDCC$auxiliary$JasaSmOc</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cpts422PAJ.personalPlanner.repositories;
+&nbsp;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Task;
+&nbsp;import org.springframework.data.jpa.repository.Query;
+&nbsp;import org.springframework.data.repository.CrudRepository;
+&nbsp;import org.springframework.data.repository.query.Param;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;
+&nbsp;public interface TaskRepository extends CrudRepository&lt;Task,Long&gt; {
+&nbsp;    @Query(&quot;SELECT t FROM Task t WHERE t.u.id = :userId&quot;)
+&nbsp;    List&lt;Task&gt; findTasksByUserId(@Param(&quot;userId&quot;)Long userId);
+&nbsp;    @Query(&quot;SELECT t FROM Task t WHERE t.tag.id = :tagId&quot;)
+&nbsp;    List&lt;Task&gt; findTasksByTagId(Long tagId);
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 13:25</div>
+</div>
+</body>
+</html>

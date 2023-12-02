@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskServiceImplTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">All in personalPlanner Coverage Results</a> &gt; <a href="index.source.html" class="el_package">cpts422PAJ.personalPlanner.services</a> &gt; <span class="el_source">TaskServiceImplTest.java</span></div><h1>TaskServiceImplTest.java</h1><pre class="source lang-java linenums">package cpts422PAJ.personalPlanner.services;
+
+import cpts422PAJ.personalPlanner.entities.Tag;
+import cpts422PAJ.personalPlanner.entities.Task;
+import cpts422PAJ.personalPlanner.entities.Users;
+import cpts422PAJ.personalPlanner.repositories.TagRepository;
+import cpts422PAJ.personalPlanner.repositories.TaskRepository;
+import cpts422PAJ.personalPlanner.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest
+<span class="fc" id="L30">class TaskServiceImplTest {</span>
+    @Mock
+    private TaskRepository taskRepository;
+    @Mock
+    private Task taskMock;
+    @Mock
+    private Tag tagMock;
+    @Mock
+    private UserServiceImpl userService;
+    @Mock
+    private TagServiceImpl tagService;
+    @Mock
+    private Users users;
+    private Users jon;
+    private Tag none;
+    private Tag homework;
+    private Date date;
+    private Task jonHW1;
+    private Task jonHW2;
+    private Task jonHW3;
+    private List&lt;Task&gt; taskList;
+    @InjectMocks
+    private TaskServiceImpl taskService;
+
+    @BeforeEach
+    void setUp() {
+<span class="fc" id="L56">        MockitoAnnotations.initMocks(this);</span>
+<span class="fc" id="L57">        jon = new Users(&quot;jon.barios.pore@wsu.edu&quot;, &quot;jonb&quot;, &quot;pass&quot;,&quot;John&quot;, &quot;Pore&quot;, false);</span>
+<span class="fc" id="L58">        none = new Tag(&quot;None&quot;);</span>
+<span class="fc" id="L59">        homework = new Tag(&quot;Homework&quot;);</span>
+<span class="fc" id="L60">        DateFormat dateFormat = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="fc" id="L61">        date = null;</span>
+        try {
+<span class="fc" id="L63">            date = dateFormat.parse((&quot;14/11/2023&quot;));</span>
+<span class="nc" id="L64">        } catch (ParseException e) {</span>
+<span class="nc" id="L65">            throw new RuntimeException(e);</span>
+<span class="fc" id="L66">        }</span>
+<span class="fc" id="L67">        jonHW1 = new Task(&quot;Jon hw1&quot;, false, &quot;do this&quot;, date, jon, none);</span>
+<span class="fc" id="L68">        jonHW2 = new Task(&quot;Jon nothing&quot;, false, &quot;do this&quot;, date, jon, none);</span>
+<span class="fc" id="L69">        jonHW3 = new Task(&quot;Jon hw3&quot;, false, &quot;do this&quot;, date, jon, none);</span>
+<span class="fc" id="L70">        taskList = List.of(</span>
+                jonHW1,
+                jonHW2,
+                jonHW3
+        );
+
+<span class="fc" id="L76">        when(taskRepository.findTasksByUserId(1L)).thenReturn(taskList);</span>
+<span class="fc" id="L77">    }</span>
+
+    @Test
+    void findAll() {
+
+<span class="fc" id="L82">    }</span>
+
+    @Test
+    void getTasksForUser() {
+<span class="fc" id="L86">    }</span>
+
+    @Test
+    void getTasksByTag() {
+<span class="fc" id="L90">    }</span>
+
+    @Test
+    void getTaskById() {
+<span class="fc" id="L94">    }</span>
+
+    @Test
+    void saveTestAdmin() {
+<span class="fc" id="L98">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(date);</span>
+<span class="fc" id="L99">        when(userService.checkIfAdmin()).thenReturn(true);</span>
+<span class="fc" id="L100">        taskService.save(taskMock);</span>
+<span class="fc" id="L101">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L102">    }</span>
+
+    @Test
+    void saveTestLongName() {
+<span class="fc" id="L106">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L107">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L108">        when(userService.notUnique()).thenReturn(0L);</span>
+<span class="fc" id="L109">        when(taskMock.getTaskName()).thenReturn(&quot;oaisjfoiwjefioajiwofeiowfaefawef&quot;);</span>
+<span class="fc" id="L110">        taskService.save(taskMock);</span>
+<span class="fc" id="L111">        verify(taskRepository, times(0)).save(taskMock);</span>
+<span class="fc" id="L112">    }</span>
+
+    @Test
+    void saveTestAlliterationUnique() {
+        // Acceptable task as it is alliteration but the user is unique
+<span class="fc" id="L117">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L118">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L119">        when(userService.notUnique()).thenReturn(10L);</span>
+<span class="fc" id="L120">        when(taskMock.getTaskName()).thenReturn(&quot;this this this this&quot;);</span>
+<span class="fc" id="L121">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L122">        taskService.save(taskMock);</span>
+<span class="fc" id="L123">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L124">    }</span>
+
+    @Test
+    void saveTestAlliterationNotUnique() {
+        // Not acceptable task as it is alliteration and user isn't unique
+<span class="fc" id="L129">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L130">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L131">        when(userService.notUnique()).thenReturn(5L);</span>
+<span class="fc" id="L132">        when(taskMock.getTaskName()).thenReturn(&quot;this this this this&quot;);</span>
+<span class="fc" id="L133">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L134">        taskService.save(taskMock);</span>
+<span class="fc" id="L135">        verify(taskRepository, times(0)).save(taskMock);</span>
+<span class="fc" id="L136">    }</span>
+
+    @Test
+    void saveTestTagNameUnique() {
+        // Acceptable task as user is unique enough to name tasks same as tags
+<span class="fc" id="L141">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L142">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L143">        when(userService.notUnique()).thenReturn(-1L);</span>
+<span class="fc" id="L144">        when(taskMock.getTaskName()).thenReturn(&quot;None&quot;);</span>
+<span class="fc" id="L145">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L146">        taskService.save(taskMock);</span>
+<span class="fc" id="L147">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L148">    }</span>
+
+    @Test
+    void saveTestTagNameNotUnique() {
+        // Not acceptable task as user is unique enough to name tasks same as tags
+<span class="fc" id="L153">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L154">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L155">        when(userService.notUnique()).thenReturn(10L);</span>
+<span class="fc" id="L156">        when(taskMock.getTaskName()).thenReturn(&quot;None&quot;);</span>
+<span class="fc" id="L157">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L158">        taskService.save(taskMock);</span>
+<span class="fc" id="L159">        verify(taskRepository, times(0)).save(taskMock);</span>
+<span class="fc" id="L160">    }</span>
+
+    @Test
+    void saveTestCharacterCountMediumUniqueZ() {
+        // This will be the acceptable route
+<span class="fc" id="L165">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L166">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L167">        when(userService.notUnique()).thenReturn(10L);</span>
+<span class="fc" id="L168">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L169">        when(taskMock.getTaskName()).thenReturn(&quot;asaaaaaaaaaaza&quot;);</span>
+<span class="fc" id="L170">        taskService.save(taskMock);</span>
+<span class="fc" id="L171">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L172">    }</span>
+
+    @Test
+    void saveTestCharacterCountMediumUniqueW() {
+        // This will be the acceptable route
+<span class="fc" id="L177">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L178">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L179">        when(userService.notUnique()).thenReturn(10L);</span>
+<span class="fc" id="L180">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L181">        when(taskMock.getTaskName()).thenReturn(&quot;asaaaaaaaaaawa&quot;);</span>
+<span class="fc" id="L182">        taskService.save(taskMock);</span>
+<span class="fc" id="L183">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L184">    }</span>
+
+    @Test
+    void saveTestCharacterCountMediumUniqueX() {
+        // This will be the acceptable route
+<span class="fc" id="L189">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L190">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L191">        when(userService.notUnique()).thenReturn(10L);</span>
+<span class="fc" id="L192">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L193">        when(taskMock.getTaskName()).thenReturn(&quot;asaaaaaaaaaaxa&quot;);</span>
+<span class="fc" id="L194">        taskService.save(taskMock);</span>
+<span class="fc" id="L195">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L196">    }</span>
+
+    @Test
+    void saveTestCharacterCountMediumUnique2() {
+        // This will be the unacceptable route
+<span class="fc" id="L201">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L202">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L203">        when(userService.notUnique()).thenReturn(10L);</span>
+<span class="fc" id="L204">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L205">        when(taskMock.getTaskName()).thenReturn(&quot;asaaaaaaaaaaa&quot;);</span>
+<span class="fc" id="L206">        taskService.save(taskMock);</span>
+<span class="fc" id="L207">        verify(taskRepository,times(0)).save(taskMock);</span>
+<span class="fc" id="L208">    }</span>
+
+    @Test
+    void saveTestCharacterCountMaxUnique() {
+        // This is acceptable as user is max unique
+<span class="fc" id="L213">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L214">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L215">        when(userService.notUnique()).thenReturn(-1L);</span>
+<span class="fc" id="L216">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L217">        when(taskMock.getTaskName()).thenReturn(&quot;asaaaaaaaaaaa&quot;);</span>
+<span class="fc" id="L218">        taskService.save(taskMock);</span>
+<span class="fc" id="L219">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L220">    }</span>
+
+    @Test
+    void saveTestCharacterCountNotUnique() {
+        // This is unacceptable as user is not unique
+<span class="fc" id="L225">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L226">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L227">        when(userService.notUnique()).thenReturn(5L);</span>
+<span class="fc" id="L228">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L229">        when(taskMock.getTaskName()).thenReturn(&quot;asaaaaaaaaaaa&quot;);</span>
+<span class="fc" id="L230">        taskService.save(taskMock);</span>
+<span class="fc" id="L231">        verify(taskRepository, times(0)).save(taskMock);</span>
+<span class="fc" id="L232">    }</span>
+
+    @Test
+    void saveTestDueDateUnique() {
+        // This is acceptable as user is max unique
+<span class="fc" id="L237">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L238">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L239">        when(userService.notUnique()).thenReturn(-1L);</span>
+<span class="fc" id="L240">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L241">        when(taskMock.getTaskName()).thenReturn(&quot;due date&quot;);</span>
+<span class="fc" id="L242">        Calendar calendar = Calendar.getInstance();</span>
+<span class="fc" id="L243">        calendar.setTime(date);</span>
+<span class="fc" id="L244">        calendar.add(Calendar.DAY_OF_MONTH, -100);</span>
+        // Get the new due date as a Date object
+<span class="fc" id="L246">        Date newDueDate = calendar.getTime();</span>
+<span class="fc" id="L247">        when(taskMock.getDueDate()).thenReturn(newDueDate);</span>
+<span class="fc" id="L248">        taskService.save(taskMock);</span>
+<span class="fc" id="L249">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L250">    }</span>
+
+    @Test
+    void saveTestDueDateNotUnique() {
+        // This is acceptable as user is max unique
+<span class="fc" id="L255">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L256">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L257">        when(userService.notUnique()).thenReturn(5L);</span>
+<span class="fc" id="L258">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L259">        when(taskMock.getTaskName()).thenReturn(&quot;due date&quot;);</span>
+<span class="fc" id="L260">        Calendar calendar = Calendar.getInstance();</span>
+<span class="fc" id="L261">        calendar.setTime(date);</span>
+<span class="fc" id="L262">        calendar.add(Calendar.DAY_OF_MONTH, -100);</span>
+        // Get the new due date as a Date object
+<span class="fc" id="L264">        Date newDueDate = calendar.getTime();</span>
+<span class="fc" id="L265">        when(taskMock.getDueDate()).thenReturn(newDueDate);</span>
+<span class="fc" id="L266">        taskService.save(taskMock);</span>
+<span class="fc" id="L267">        verify(taskRepository, times(0)).save(taskMock);</span>
+<span class="fc" id="L268">    }</span>
+
+    @Test
+    void saveTestDueDateNull() {
+        // This is acceptable as there is no due date
+<span class="fc" id="L273">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L274">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L275">        when(userService.notUnique()).thenReturn(5L);</span>
+<span class="fc" id="L276">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L277">        when(taskMock.getTaskName()).thenReturn(&quot;due date&quot;);</span>
+<span class="fc" id="L278">        when(taskMock.getDueDate()).thenReturn(null);</span>
+<span class="fc" id="L279">        taskService.save(taskMock);</span>
+<span class="fc" id="L280">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L281">    }</span>
+
+    @Test
+    void saveTestDueDateAfterCurrentTime() {
+        // This is acceptable as user is max unique
+<span class="fc" id="L286">        when(taskService.calculateNewDueDate(taskMock)).thenReturn(null);</span>
+<span class="fc" id="L287">        when(userService.checkIfAdmin()).thenReturn(false);</span>
+<span class="fc" id="L288">        when(userService.notUnique()).thenReturn(5L);</span>
+<span class="fc" id="L289">        when(tagService.findAll()).thenReturn(List.of(none, homework));</span>
+<span class="fc" id="L290">        when(taskMock.getTaskName()).thenReturn(&quot;due date&quot;);</span>
+<span class="fc" id="L291">        Timestamp currentTime = new Timestamp(System.currentTimeMillis());</span>
+<span class="fc" id="L292">        Date currentDate = new Date(currentTime.getTime());</span>
+<span class="fc" id="L293">        Calendar calendar = Calendar.getInstance();</span>
+<span class="fc" id="L294">        calendar.setTime(currentDate);</span>
+<span class="fc" id="L295">        calendar.add(Calendar.DAY_OF_MONTH, 100);</span>
+        // Get the new due date as a Date object
+<span class="fc" id="L297">        Date newDueDate = calendar.getTime();</span>
+<span class="fc" id="L298">        when(taskMock.getDueDate()).thenReturn(newDueDate);</span>
+<span class="fc" id="L299">        taskService.save(taskMock);</span>
+<span class="fc" id="L300">        verify(taskRepository).save(taskMock);</span>
+<span class="fc" id="L301">    }</span>
+
+
+    @Test
+    void findAllTest() {
+<span class="fc" id="L306">        taskService.findAll();</span>
+<span class="fc" id="L307">        verify(taskRepository).findAll();</span>
+<span class="fc" id="L308">    }</span>
+
+    @Test
+    void getTasksForUserTest() {
+<span class="fc" id="L312">        when(users.getId()).thenReturn(1L);</span>
+<span class="fc" id="L313">        taskService.getTasksForUser(users);</span>
+<span class="fc" id="L314">        verify(taskRepository).findTasksByUserId(users.getId());</span>
+<span class="fc" id="L315">    }</span>
+
+    @Test
+    void getTaksByTagTest() {
+<span class="fc" id="L319">        when(tagMock.getId()).thenReturn(1L);</span>
+<span class="fc" id="L320">        taskService.getTasksByTag(tagMock);</span>
+<span class="fc" id="L321">        verify(taskRepository).findTasksByTagId(tagMock.getId());</span>
+<span class="fc" id="L322">    }</span>
+
+    @Test
+    void getTaskByIdTest() {
+<span class="fc" id="L326">        when(taskRepository.findById(1L)).thenReturn(Optional.of(jonHW1));</span>
+<span class="fc" id="L327">        taskService.getTaskById(1L);</span>
+<span class="fc" id="L328">        verify(taskRepository).findById(1L);</span>
+<span class="fc" id="L329">    }</span>
+
+    @Test
+    void uniquenessCalculatorTest() {
+<span class="fc" id="L333">        assertEquals(0, taskService.uniquenessCalculator(5L));</span>
+<span class="fc" id="L334">        assertEquals(1, taskService.uniquenessCalculator(10L));</span>
+<span class="fc" id="L335">        assertEquals(2, taskService.uniquenessCalculator(100000L));</span>
+<span class="fc" id="L336">    }</span>
+
+    @Test
+    void amountOfTasksTest() {
+<span class="fc" id="L340">        assertEquals(3L, taskService.amountOfTasks(1L));</span>
+<span class="fc" id="L341">    }</span>
+
+    @Test
+    void calculateNewDueDateTest() {
+<span class="fc" id="L345">        reset(taskMock);</span>
+<span class="fc" id="L346">        when(taskMock.getManuallySetDueDate()).thenReturn(date);</span>
+<span class="fc" id="L347">        assertEquals(date, taskService.calculateNewDueDate(taskMock));</span>
+
+        // Missing the first if statement and then going into the second and third if statement
+<span class="fc" id="L350">        Timestamp created = Timestamp.valueOf(&quot;2002-01-01 00:00:00&quot;);</span>
+<span class="fc" id="L351">        when(taskMock.getManuallySetDueDate()).thenReturn(null);</span>
+<span class="fc" id="L352">        when(taskMock.getCreated()).thenReturn(created);</span>
+<span class="fc" id="L353">        when(taskMock.getTag()).thenReturn(tagMock);</span>
+<span class="fc" id="L354">        when(tagMock.getName()).thenReturn(&quot;Homework&quot;);</span>
+<span class="fc" id="L355">        Calendar expected = Calendar.getInstance();</span>
+<span class="fc" id="L356">        expected.setTime(created);</span>
+<span class="fc" id="L357">        expected.add(Calendar.DAY_OF_MONTH, 7);</span>
+<span class="fc" id="L358">        assertEquals(new Date(expected.getTimeInMillis()), taskService.calculateNewDueDate(taskMock));</span>
+
+        // Nif, if, else
+<span class="fc" id="L361">        when(taskMock.getManuallySetDueDate()).thenReturn(null);</span>
+<span class="fc" id="L362">        when(taskMock.getTag()).thenReturn(tagMock);</span>
+<span class="fc" id="L363">        when(tagMock.getName()).thenReturn(&quot;None&quot;);</span>
+<span class="fc" id="L364">        assertNull(taskService.calculateNewDueDate(taskMock));</span>
+
+        // Nif, else
+<span class="fc" id="L367">        when(taskMock.getTag()).thenReturn(null);</span>
+<span class="fc" id="L368">        when(taskMock.getDueDate()).thenReturn(date);</span>
+<span class="fc" id="L369">        assertEquals(date, taskService.calculateNewDueDate(taskMock));</span>
+<span class="fc" id="L370">    }</span>
+
+    @Test
+    void getDueDateIncrementTest() {
+<span class="fc" id="L374">        assertEquals(7, taskService.getDueDateIncrement(&quot;Homework&quot;));</span>
+<span class="fc" id="L375">        assertEquals(14, taskService.getDueDateIncrement(&quot;Work&quot;));</span>
+<span class="fc" id="L376">        assertEquals(3, taskService.getDueDateIncrement(&quot;Life&quot;));</span>
+<span class="fc" id="L377">        assertEquals(0, taskService.getDueDateIncrement(&quot;None&quot;));</span>
+<span class="fc" id="L378">        assertEquals(0, taskService.getDueDateIncrement(&quot;Unknown&quot;));</span>
+<span class="fc" id="L379">        assertEquals(0, taskService.getDueDateIncrement(&quot;homework&quot;));</span>
+<span class="fc" id="L380">    }</span>
+
+    @Test
+    void isAlliterationTest() {
+        // Don't enter for loop
+<span class="fc" id="L385">        assertFalse(taskService.isAlliteration(&quot;&quot;));</span>
+        // Enter for loop
+        // if, if, if
+<span class="fc" id="L388">        assertTrue(taskService.isAlliteration(&quot;sad siwjf oijds soiwje soiw&quot;));</span>
+
+<span class="fc" id="L390">        assertFalse(taskService.isAlliteration(&quot;123 asf soifj&quot;));</span>
+<span class="fc" id="L391">    }</span>
+
+    @Test
+    void characterCountOver8Test() {
+        // if
+<span class="fc" id="L396">        assertTrue(taskService.characterCountOver8(&quot;&quot;));</span>
+
+<span class="fc" id="L398">        assertTrue(taskService.characterCountOver8(null));</span>
+
+        // Nif if
+<span class="fc" id="L401">        assertTrue(taskService.characterCountOver8(&quot;jijiiiiiiiiiiiii&quot;));</span>
+
+        // Nif else
+<span class="fc" id="L404">        assertFalse(taskService.characterCountOver8(&quot;jkh&quot;));</span>
+
+<span class="fc" id="L406">        assertFalse(taskService.characterCountOver8(&quot;1o!/23213oj:`{}#$%*^%&amp;$#@!23&quot;));</span>
+<span class="fc" id="L407">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

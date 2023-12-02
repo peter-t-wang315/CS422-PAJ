@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserServiceImplTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">All in personalPlanner Coverage Results</a> &gt; <a href="index.source.html" class="el_package">cpts422PAJ.personalPlanner.services</a> &gt; <span class="el_source">UserServiceImplTest.java</span></div><h1>UserServiceImplTest.java</h1><pre class="source lang-java linenums">package cpts422PAJ.personalPlanner.services;
+
+import cpts422PAJ.personalPlanner.entities.Users;
+import cpts422PAJ.personalPlanner.repositories.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest
+<span class="fc" id="L21">class UserServiceImplTest {</span>
+    @Mock
+    private UserRepository userRepository;
+    @InjectMocks
+    private UserServiceImpl userService;
+    Users testUser;
+    Users testUser2;
+    Users testUser3;
+    Users testUser4;
+    Users adminUser;
+
+    @BeforeEach
+    void setUp() {
+<span class="fc" id="L34">        MockitoAnnotations.initMocks(this);</span>
+<span class="fc" id="L35">        testUser = new Users(&quot;test.pore@wsu.edu&quot;, &quot;testUserName&quot;, &quot;testUserPass&quot;,&quot;testF&quot;, &quot;testL&quot;, false);</span>
+<span class="fc" id="L36">        testUser2 = new Users(&quot;test.wsu.edu&quot;, &quot;test2Name&quot;, &quot;test2Pass&quot;, &quot;John&quot;, &quot;Test2L&quot;, false);</span>
+<span class="fc" id="L37">        testUser3 = new Users(&quot;test3.wsu.edu&quot;, &quot;test3Name&quot;, &quot;test3Pass&quot;, &quot;David&quot;, &quot;Blaine&quot;, false);</span>
+<span class="fc" id="L38">        testUser4 = new Users(&quot;tes4.wsu.edu&quot;, &quot;testUserName&quot;, &quot;test2Pass&quot;, &quot;John&quot;, &quot;Test2L&quot;, false);</span>
+<span class="fc" id="L39">        adminUser = new Users(&quot;testAdmin.wsu.edu&quot;, &quot;testAdminName&quot;, &quot;testAdminPass&quot;, &quot;testAdminF&quot;, &quot;testAdminL&quot;, true);</span>
+<span class="fc" id="L40">    }</span>
+
+    @Test
+    void findAll() {
+
+<span class="fc" id="L45">        List&lt;Users&gt; userList = Arrays.asList(testUser, testUser2);</span>
+<span class="fc" id="L46">        when(userRepository.findAll()).thenReturn(userList);</span>
+<span class="fc" id="L47">        Iterable&lt;Users&gt; users = userService.findAll();</span>
+
+<span class="fc" id="L49">        List&lt;Users&gt; usersList = (List&lt;Users&gt;) users;</span>
+<span class="fc" id="L50">        assertEquals(userList,usersList);</span>
+<span class="fc" id="L51">    }</span>
+
+    @Test
+    void getUserById() {
+        //Should be the very first item in the setup, so testUser
+
+
+<span class="fc" id="L58">        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(testUser));</span>
+<span class="fc" id="L59">        Optional&lt;Users&gt; idUser = Optional.ofNullable(userService.getUserById(1L));</span>
+<span class="fc" id="L60">        assertEquals(Optional.of( testUser), idUser);</span>
+
+
+<span class="fc" id="L63">    }</span>
+
+    @Test
+    void save() {
+<span class="fc" id="L67">        when(userRepository.save(testUser)).thenReturn(testUser);</span>
+<span class="fc" id="L68">        Users savedUser = userService.save(testUser);</span>
+<span class="fc" id="L69">        assertEquals((testUser), savedUser);</span>
+
+<span class="fc" id="L71">    }</span>
+
+    @Test
+    void isUser() {
+<span class="fc" id="L75">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L76">        boolean checkifUser = userService.isUser(&quot;testUserName&quot;, &quot;testUserPass&quot;);</span>
+<span class="fc" id="L77">        boolean notUser = userService.isUser(&quot;testUserName&quot;, &quot; TestUserPass&quot;);</span>
+<span class="fc" id="L78">        boolean notUser2 = userService.isUser(&quot;nope&quot;, &quot;testUserPass&quot;);</span>
+<span class="fc" id="L79">        boolean notUser3 = userService.isUser(&quot;no&quot;, &quot;tess&quot;);</span>
+
+<span class="fc" id="L81">        assertTrue(checkifUser);</span>
+<span class="fc" id="L82">        assertFalse(notUser);</span>
+<span class="fc" id="L83">        assertFalse(notUser2);</span>
+<span class="fc" id="L84">        assertFalse(notUser3);</span>
+<span class="fc" id="L85">    }</span>
+
+    @Test
+    void changeUserActivity() {
+
+<span class="fc" id="L90">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L91">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+<span class="fc" id="L92">        userService.changeUserActivity(&quot;testUserName&quot;, &quot;testUserPass&quot;);</span>
+<span class="fc" id="L93">        verify(userRepository).save(testUser);</span>
+<span class="fc" id="L94">    }</span>
+
+    @Test
+    void changeUserActivity2() {
+
+<span class="fc" id="L99">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L100">        when(userRepository.findById(1L)).thenReturn(Optional.empty());</span>
+<span class="fc" id="L101">        userService.changeUserActivity(&quot;testUsName&quot;, &quot;stUserPass&quot;);</span>
+
+<span class="fc" id="L103">        verify(userRepository, never()).save(testUser);</span>
+<span class="fc" id="L104">    }</span>
+
+    @Test
+    void findActiveUser() {
+<span class="fc" id="L108">        List&lt;Users&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L109">        users.add(new Users(&quot;Tes@gmail.com&quot;, &quot;Tes&quot;,&quot;Tes&quot;, &quot;tes&quot;, &quot;tes&quot;, false));</span>
+<span class="fc" id="L110">        users.add(new Users(&quot;Tes2@gmail.com&quot;, &quot;Tes2&quot;,&quot;Tes2&quot;, &quot;tes2&quot;, &quot;tes2&quot;, false));</span>
+<span class="fc" id="L111">        users.add(new Users(&quot;Tes3@gmail.com&quot;, &quot;Tes3&quot;,&quot;Tes3&quot;, &quot;tes3&quot;, &quot;tes3&quot;, false));</span>
+
+<span class="fc" id="L113">        when(userRepository.findAll()).thenReturn(users);</span>
+<span class="fc" id="L114">        users.get(0).setCurrUser(true);</span>
+<span class="fc" id="L115">        Long result = userService.findActiveUser();</span>
+
+<span class="fc" id="L117">        assertEquals(1L, result);</span>
+
+<span class="fc" id="L119">    }</span>
+
+    @Test
+    void findActiveUser2() {
+<span class="fc" id="L123">        List&lt;Users&gt; users = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L124">        users.add(new Users(&quot;Tes@gmail.com&quot;, &quot;Tes&quot;,&quot;Tes&quot;, &quot;tes&quot;, &quot;tes&quot;, false));</span>
+<span class="fc" id="L125">        users.add(new Users(&quot;Tes2@gmail.com&quot;, &quot;Tes2&quot;,&quot;Tes2&quot;, &quot;tes2&quot;, &quot;tes2&quot;, false));</span>
+<span class="fc" id="L126">        users.add(new Users(&quot;Tes3@gmail.com&quot;, &quot;Tes3&quot;,&quot;Tes3&quot;, &quot;tes3&quot;, &quot;tes3&quot;, false));</span>
+
+<span class="fc" id="L128">        when(userRepository.findAll()).thenReturn(users);</span>
+<span class="fc" id="L129">        Long result = userService.findActiveUser();</span>
+
+<span class="fc" id="L131">        assertEquals(0L, result);</span>
+
+<span class="fc" id="L133">    }</span>
+
+    @Test
+    void logOffUser() {
+<span class="fc" id="L137">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L138">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+<span class="fc" id="L139">        testUser.setCurrUser(true);</span>
+<span class="fc" id="L140">        userService.logOffUser();</span>
+<span class="fc" id="L141">        verify(userRepository).save(testUser);</span>
+<span class="fc" id="L142">    }</span>
+
+    @Test
+    void logOffUser2() {
+<span class="fc" id="L146">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L147">        when(userRepository.findById(1L)).thenReturn(Optional.empty());</span>
+<span class="fc" id="L148">        userService.logOffUser();</span>
+<span class="fc" id="L149">        verify(userRepository, never()).save(testUser);</span>
+<span class="fc" id="L150">    }</span>
+
+    @Test
+    void logOffAllUsers() {
+<span class="fc" id="L154">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L155">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+<span class="fc" id="L156">        testUser.setCurrUser(true);</span>
+<span class="fc" id="L157">        userService.logOffAllUsers();</span>
+<span class="fc" id="L158">        verify(userRepository).save(testUser);</span>
+<span class="fc" id="L159">    }</span>
+
+    @Test
+    void logOffAllUsers2() {
+<span class="fc" id="L163">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L164">        when(userRepository.findById(1L)).thenReturn(Optional.empty());</span>
+<span class="fc" id="L165">        userService.logOffAllUsers();</span>
+<span class="fc" id="L166">        verify(userRepository, never()).save(testUser);</span>
+<span class="fc" id="L167">    }</span>
+
+
+    @Test
+    void isCommonName() {
+<span class="fc" id="L172">        assertTrue(userService.isCommonName(&quot;John&quot;));</span>
+<span class="fc" id="L173">    }</span>
+    @Test
+    void isCommonName2() {
+<span class="fc" id="L176">        assertFalse(userService.isCommonName(&quot;Johnny&quot;));</span>
+<span class="fc" id="L177">    }</span>
+
+    @Test
+    void m_z() {
+<span class="fc" id="L181">        assertTrue(userService.m_z(&quot;Mona&quot;));</span>
+<span class="fc" id="L182">    }</span>
+
+    @Test
+    void m_z2() {
+<span class="fc" id="L186">        assertFalse(userService.m_z(&quot;Cona&quot;));</span>
+<span class="fc" id="L187">    }</span>
+
+    @Test
+    void notUnique() { //admin branch
+<span class="fc" id="L191">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L192">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+<span class="fc" id="L193">        testUser.setCurrUser(true);</span>
+<span class="fc" id="L194">        testUser.setAdmin(true);</span>
+<span class="fc" id="L195">        Long typeOfUnique = userService.notUnique();</span>
+<span class="fc" id="L196">        assertEquals(1000000L, typeOfUnique);</span>
+<span class="fc" id="L197">    }</span>
+
+    @Test
+    void notUnique2() { //there are no current users branch
+<span class="fc" id="L201">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L202">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+<span class="fc" id="L203">        Long typeOfUnique = userService.notUnique();</span>
+
+<span class="fc" id="L205">        assertEquals(-1L, typeOfUnique);</span>
+<span class="fc" id="L206">    }</span>
+    @Test
+    void notUnique3() { //Goes into else, straight to save
+<span class="fc" id="L209">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L210">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+<span class="fc" id="L211">        testUser.setCurrUser(true);</span>
+<span class="fc" id="L212">        Long typeOfUnique = userService.notUnique();</span>
+
+<span class="fc" id="L214">        assertEquals(-1, typeOfUnique);</span>
+<span class="fc" id="L215">    }</span>
+
+    @Test
+    void notUnique4() { //Goes into else, and then goes into if and then next if
+<span class="fc" id="L219">        when(userRepository.findAll()).thenReturn(List.of(testUser2));</span>
+<span class="fc" id="L220">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser2));</span>
+<span class="fc" id="L221">        testUser2.setCurrUser(true);</span>
+<span class="fc" id="L222">        Long typeOfUnique = userService.notUnique();</span>
+
+<span class="fc" id="L224">        assertEquals(10L, typeOfUnique);</span>
+<span class="fc" id="L225">    }</span>
+
+    @Test
+    void notUnique5() { //Goes into else, and then goes into if and returns 5
+<span class="fc" id="L229">        when(userRepository.findAll()).thenReturn(List.of(testUser3));</span>
+<span class="fc" id="L230">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser3));</span>
+<span class="fc" id="L231">        testUser3.setCurrUser(true);</span>
+<span class="fc" id="L232">        Long typeOfUnique = userService.notUnique();</span>
+
+<span class="fc" id="L234">        assertEquals(5L, typeOfUnique);</span>
+<span class="fc" id="L235">    }</span>
+
+    @Test
+    void checkSameUser() {
+<span class="fc" id="L239">        when(userRepository.findAll()).thenReturn(List.of(testUser,testUser4));</span>
+<span class="fc" id="L240">        boolean ifSameUser = userService.checkSameUser(&quot;testUserName&quot;);</span>
+<span class="fc" id="L241">        assertFalse(ifSameUser);</span>
+
+<span class="fc" id="L243">    }</span>
+    @Test
+    void checkSameUser2() {
+<span class="fc" id="L246">        when(userRepository.findAll()).thenReturn(List.of(testUser,testUser4));</span>
+<span class="fc" id="L247">        boolean ifSameuser = userService.checkSameUser(&quot;testUseName&quot;);</span>
+<span class="fc" id="L248">        assertTrue(ifSameuser);</span>
+<span class="fc" id="L249">    }</span>
+
+
+
+
+
+    @Test
+    void getAdminPassword() {
+<span class="fc" id="L257">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L258">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+
+<span class="fc" id="L260">        String password = userService.getAdminPassword();</span>
+<span class="fc" id="L261">        assertEquals(testUser.getAdminPassword(), password);</span>
+<span class="fc" id="L262">    }</span>
+
+
+
+//    @Test
+//    void checkIfAdmin() { //is an admin
+//        List&lt;Users&gt; users = new ArrayList&lt;&gt;();
+//        users.add(new Users(&quot;Tes@gmail.com&quot;, &quot;Tes&quot;,&quot;Tes&quot;, &quot;tes&quot;, &quot;tes&quot;, true));
+//        users.add(new Users(&quot;Tes2@gmail.com&quot;, &quot;Tes2&quot;,&quot;Tes2&quot;, &quot;tes2&quot;, &quot;tes2&quot;, false));
+//        users.add(new Users(&quot;Tes3@gmail.com&quot;, &quot;Tes3&quot;,&quot;Tes3&quot;, &quot;tes3&quot;, &quot;tes3&quot;, false));
+//
+//    when(userRepository.findAll()).thenReturn(users);
+//    users.get(0).setCurrUser(true);
+//
+//    when(userService.findActiveUser()).thenReturn(1L);
+//    when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(users.get(0)));
+//    boolean ifAdmin = userService.checkIfAdmin();
+//    assertTrue(ifAdmin);
+//
+//    }
+
+
+//    @Test
+//    void checkIfAdmin() { //is an admin
+//        List&lt;Users&gt; users = new ArrayList&lt;&gt;();
+//        users.add(new Users(&quot;Tes@gmail.com&quot;, &quot;Tes&quot;,&quot;Tes&quot;, &quot;tes&quot;, &quot;tes&quot;, true));
+//        users.add(new Users(&quot;Tes2@gmail.com&quot;, &quot;Tes2&quot;,&quot;Tes2&quot;, &quot;tes2&quot;, &quot;tes2&quot;, false));
+//        users.add(new Users(&quot;Tes3@gmail.com&quot;, &quot;Tes3&quot;,&quot;Tes3&quot;, &quot;tes3&quot;, &quot;tes3&quot;, false));
+//
+//        when(userRepository.findAll()).thenReturn(users);
+//        users.get(0).setCurrUser(true);
+//
+//        when(userService.findActiveUser()).thenReturn(1L);
+//        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(users.get(0)));
+//        boolean ifAdmin = userService.checkIfAdmin();
+//        assertTrue(ifAdmin);
+//
+//    }
+
+    @Test
+    void checkIfAdmin() { //is regular
+
+//        when(userService.findActiveUser()).thenReturn(1L);
+<span class="fc" id="L305">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L306">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+
+<span class="fc" id="L308">        testUser.setCurrUser(true);</span>
+<span class="fc" id="L309">        boolean ifAdmin = userService.checkIfAdmin();</span>
+<span class="fc" id="L310">        assertFalse(ifAdmin);</span>
+
+<span class="fc" id="L312">    }</span>
+
+    @Test
+    void checkIfAdmin2() { //is an admin
+
+//        when(userService.findActiveUser()).thenReturn(1L);
+<span class="fc" id="L318">        when(userRepository.findAll()).thenReturn(List.of(adminUser));</span>
+<span class="fc" id="L319">        when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));</span>
+
+<span class="fc" id="L321">        adminUser.setCurrUser(true);</span>
+<span class="fc" id="L322">        boolean ifAdmin = userService.checkIfAdmin();</span>
+<span class="fc" id="L323">        assertTrue(ifAdmin);</span>
+
+<span class="fc" id="L325">    }</span>
+
+    @Test
+    void checkIfAdmin3() { //i
+
+//        when(userService.findActiveUser()).thenReturn(1L);
+<span class="fc" id="L331">        when(userRepository.findAll()).thenReturn(List.of(testUser));</span>
+<span class="fc" id="L332">        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));</span>
+
+<span class="fc" id="L334">        boolean ifAdmin = userService.checkIfAdmin();</span>
+<span class="fc" id="L335">        assertFalse(ifAdmin);</span>
+
+<span class="fc" id="L337">    }</span>
+
+    @Test
+    void checkAtSign() {
+<span class="fc" id="L341">        boolean ifSign = userService.checkAtSign(&quot;Jon@wsu.edu&quot;);</span>
+<span class="fc" id="L342">        assertTrue(ifSign);</span>
+<span class="fc" id="L343">    }</span>
+
+    @Test
+    void checkAtSign2() {
+<span class="fc" id="L347">        boolean ifSign = userService.checkAtSign(&quot;Jonwsu.edu&quot;);</span>
+<span class="fc" id="L348">        assertFalse(ifSign);</span>
+<span class="fc" id="L349">    }</span>
+
+    @Test
+    void checkDomains() {
+<span class="fc" id="L353">        boolean ifDomain = userService.checkDomains(&quot;jon@wsu.edu&quot;);</span>
+<span class="fc" id="L354">        assertTrue(ifDomain);</span>
+<span class="fc" id="L355">    }</span>
+
+    @Test
+    void checkDomains2() {
+<span class="fc" id="L359">        boolean ifDomain = userService.checkDomains(&quot;jon@wrong.wrong&quot;);</span>
+<span class="fc" id="L360">        assertFalse(ifDomain);</span>
+<span class="fc" id="L361">    }</span>
+
+    @Test
+    void checkEmail() { //TT
+<span class="fc" id="L365">        boolean ifEmail = userService.checkEmail(&quot;jon@wsu.edu&quot;);</span>
+<span class="fc" id="L366">        assertTrue(ifEmail);</span>
+<span class="fc" id="L367">    }</span>
+    @Test
+    void checkEmail2() { //FF
+<span class="fc" id="L370">        boolean ifEmail = userService.checkEmail(&quot;jonwsufdsedu&quot;);</span>
+<span class="fc" id="L371">        assertFalse(ifEmail);</span>
+<span class="fc" id="L372">    }</span>
+    @Test
+    void checkEmail3() { //TF
+<span class="fc" id="L375">        boolean ifEmail = userService.checkEmail(&quot;jon@wrong&quot;);</span>
+<span class="fc" id="L376">        assertFalse(ifEmail);</span>
+<span class="fc" id="L377">    }</span>
+    @Test
+    void checkEmail4() { //FT
+<span class="fc" id="L380">        boolean ifEmail = userService.checkEmail(&quot;jonwsu.edu&quot;);</span>
+<span class="fc" id="L381">        assertFalse(ifEmail);</span>
+<span class="fc" id="L382">    }</span>
+    @Test
+    void checkEmail5() { //FT
+<span class="fc" id="L385">        boolean ifEmail = userService.checkEmail(&quot;jon@wsuedu&quot;);</span>
+<span class="fc" id="L386">        assertFalse(ifEmail);</span>
+<span class="fc" id="L387">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

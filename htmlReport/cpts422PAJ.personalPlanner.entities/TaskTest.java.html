@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">All in personalPlanner Coverage Results</a> &gt; <a href="index.source.html" class="el_package">cpts422PAJ.personalPlanner.entities</a> &gt; <span class="el_source">TaskTest.java</span></div><h1>TaskTest.java</h1><pre class="source lang-java linenums">package cpts422PAJ.personalPlanner.entities;
+
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+<span class="fc" id="L16">class TaskTest {</span>
+    private Task testTask;
+    private Users jon;
+    private Tag none;
+    private Tag homework;
+    private Date date;
+
+    @BeforeEach()
+    void setUp() {
+<span class="fc" id="L25">        jon = new Users(&quot;jon.barios.pore@wsu.edu&quot;, &quot;jonb&quot;, &quot;pass&quot;,&quot;John&quot;, &quot;Pore&quot;, false);</span>
+<span class="fc" id="L26">        none = new Tag(&quot;None&quot;);</span>
+<span class="fc" id="L27">        homework = new Tag(&quot;Homework&quot;);</span>
+<span class="fc" id="L28">        DateFormat dateFormat = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="fc" id="L29">        date = null;</span>
+        try {
+<span class="fc" id="L31">            date = dateFormat.parse((&quot;14/11/2023&quot;));</span>
+<span class="nc" id="L32">        } catch (ParseException e) {</span>
+<span class="nc" id="L33">            throw new RuntimeException(e);</span>
+<span class="fc" id="L34">        }</span>
+<span class="fc" id="L35">        testTask = new Task(&quot;Jon hw1&quot;, false, &quot;do this&quot;, date, jon, none);</span>
+<span class="fc" id="L36">        testTask.setId(1L);</span>
+<span class="fc" id="L37">        Task emptyTask = new Task();</span>
+<span class="fc" id="L38">    }</span>
+
+    @Test
+    void setIdTest() {
+<span class="fc" id="L42">        testTask.setId(2L);</span>
+<span class="fc" id="L43">        assertEquals(2L, testTask.getId());</span>
+<span class="fc" id="L44">    }</span>
+
+    @Test
+    void getIdTest() {
+<span class="fc" id="L48">        assertEquals(1L,testTask.getId());</span>
+<span class="fc" id="L49">    }</span>
+
+    @Test
+    void getTaskNameTest() {
+<span class="fc" id="L53">        assertEquals(&quot;Jon hw1&quot;, testTask.getTaskName());</span>
+<span class="fc" id="L54">    }</span>
+
+    @Test
+    void setTaskNameTest() {
+<span class="fc" id="L58">        testTask.setTaskName(&quot;New task name&quot;);</span>
+<span class="fc" id="L59">        assertEquals(&quot;New task name&quot;, testTask.getTaskName());</span>
+<span class="fc" id="L60">    }</span>
+
+    @Test
+    void isCompletedTest() {
+<span class="fc" id="L64">        assertFalse(testTask.isCompleted());</span>
+<span class="fc" id="L65">    }</span>
+
+    @Test
+    void UserAndTagAccessorsTest() {
+
+<span class="fc" id="L70">        Users user = new Users();</span>
+<span class="fc" id="L71">        Tag tag = new Tag(&quot;Test Tag&quot;);</span>
+<span class="fc" id="L72">        Task task = new Task();</span>
+
+<span class="fc" id="L74">        task.setUser(user);</span>
+<span class="fc" id="L75">        task.setTag(tag);</span>
+
+<span class="fc" id="L77">        assertThat(task.getUser()).isEqualTo(user);</span>
+<span class="fc" id="L78">        assertThat(task.getTag()).isEqualTo(tag);</span>
+<span class="fc" id="L79">    }</span>
+
+    @Test
+    void testToString() {
+
+<span class="fc" id="L84">        Task task = new Task();</span>
+<span class="fc" id="L85">        task.setTaskName(&quot;Test Task&quot;);</span>
+
+<span class="fc" id="L87">        String result = task.toString();</span>
+
+<span class="fc" id="L89">        assertThat(result).contains(&quot;Test Task&quot;);</span>
+<span class="fc" id="L90">    }</span>
+
+    @Test
+    void testTaskCreationAndFieldAccessors() {
+
+<span class="fc" id="L95">        String taskName = &quot;Test Task&quot;;</span>
+<span class="fc" id="L96">        boolean completed = false;</span>
+<span class="fc" id="L97">        String note = &quot;This is a test task&quot;;</span>
+<span class="fc" id="L98">        Timestamp created = new Timestamp(new Date().getTime());</span>
+<span class="fc" id="L99">        Date dueDate = new Date();</span>
+<span class="fc" id="L100">        Users user = new Users(); // Assuming you have a constructor or a way to create a user</span>
+<span class="fc" id="L101">        Tag tag = new Tag(&quot;Test Tag&quot;);</span>
+
+<span class="fc" id="L103">        Task task = new Task(taskName, completed, note, dueDate, user, tag);</span>
+<span class="fc" id="L104">        task.setCreated(created);</span>
+
+<span class="fc" id="L106">        assertThat(task.getTaskName()).isEqualTo(taskName);</span>
+<span class="fc" id="L107">        assertThat(task.isCompleted()).isEqualTo(completed);</span>
+<span class="fc" id="L108">        assertThat(task.getNote()).isEqualTo(note);</span>
+<span class="fc" id="L109">        assertThat(task.getCreated()).isEqualTo(created);</span>
+<span class="fc" id="L110">        assertThat(task.getDueDate()).isEqualTo(dueDate);</span>
+<span class="fc" id="L111">        assertThat(task.getUser()).isEqualTo(user);</span>
+<span class="fc" id="L112">        assertThat(task.getTag()).isEqualTo(tag);</span>
+<span class="fc" id="L113">    }</span>
+
+    @Test
+    void getManuallySetDueDateShouldReturnCorrectDate() {
+
+<span class="fc" id="L118">        Task task = new Task();</span>
+<span class="fc" id="L119">        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="fc" id="L120">        Date expectedDate = null;</span>
+        try {
+<span class="fc" id="L122">            expectedDate = dateFormat.parse(&quot;15/11/2023&quot;);</span>
+<span class="nc" id="L123">        } catch (ParseException e) {</span>
+<span class="nc" id="L124">            fail(&quot;Failed to parse date&quot;);</span>
+<span class="fc" id="L125">        }</span>
+
+<span class="fc" id="L127">        task.setManuallySetDueDate(expectedDate);</span>
+<span class="fc" id="L128">        Date actualDate = task.getManuallySetDueDate();</span>
+
+<span class="fc" id="L130">        assertEquals(expectedDate, actualDate, &quot;The manually set due date should be the same as the expected date&quot;);</span>
+<span class="fc" id="L131">    }</span>
+
+    @Test
+    void setManuallySetDueDateShouldUpdateDueDate() {
+
+<span class="fc" id="L136">        Task task = new Task();</span>
+<span class="fc" id="L137">        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;dd/MM/yyyy&quot;);</span>
+<span class="fc" id="L138">        Date expectedDate = null;</span>
+        try {
+<span class="fc" id="L140">            expectedDate = dateFormat.parse(&quot;15/11/2023&quot;);</span>
+<span class="nc" id="L141">        } catch (ParseException e) {</span>
+<span class="nc" id="L142">            fail(&quot;Failed to parse date&quot;);</span>
+<span class="fc" id="L143">        }</span>
+
+<span class="fc" id="L145">        task.setManuallySetDueDate(expectedDate);</span>
+
+<span class="fc" id="L147">        assertEquals(expectedDate, task.getManuallySetDueDate(), &quot;The manually set due date should be updated&quot;);</span>
+<span class="fc" id="L148">    }</span>
+
+    @Test
+    void getTagNameShouldReturnCorrectTagName() {
+
+<span class="fc" id="L153">        Task task = new Task();</span>
+<span class="fc" id="L154">        Tag tag = new Tag(&quot;Homework&quot;);</span>
+<span class="fc" id="L155">        task.setTag(tag);</span>
+
+<span class="fc" id="L157">        String tagName = task.getTagName();</span>
+
+<span class="fc" id="L159">        assertEquals(&quot;Homework&quot;, tagName, &quot;The tag name should be 'Homework'&quot;);</span>
+<span class="fc" id="L160">    }</span>
+
+    @Test
+    void setCompletedShouldUpdateCompletedStatus() {
+
+<span class="fc" id="L165">        Task task = new Task();</span>
+<span class="fc" id="L166">        assertFalse(task.isCompleted(), &quot;Initially, task should not be completed&quot;);</span>
+
+<span class="fc" id="L168">        task.setCompleted(true);</span>
+
+<span class="fc" id="L170">        assertTrue(task.isCompleted(), &quot;Task should be marked as completed&quot;);</span>
+<span class="fc" id="L171">    }</span>
+
+    @Test
+    void setNoteShouldUpdateNote() {
+
+<span class="fc" id="L176">        Task task = new Task();</span>
+<span class="fc" id="L177">        assertEquals(&quot;&quot;, task.getNote(), &quot;Initially, task note should be an empty string&quot;);</span>
+
+<span class="fc" id="L179">        task.setNote(&quot;New Note&quot;);</span>
+<span class="fc" id="L180">        assertEquals(&quot;New Note&quot;, task.getNote(), &quot;Task note should be updated&quot;);</span>
+<span class="fc" id="L181">    }</span>
+
+    @Test
+    void setDueDateShouldUpdateDueDate() {
+
+<span class="fc" id="L186">        Task task = new Task();</span>
+<span class="fc" id="L187">        assertNull(task.getDueDate(), &quot;Initially, task due date should be null&quot;);</span>
+<span class="fc" id="L188">        Timestamp newDueDate = new Timestamp(System.currentTimeMillis());</span>
+
+<span class="fc" id="L190">        task.setDueDate(newDueDate);</span>
+
+<span class="fc" id="L192">        assertEquals(newDueDate, task.getDueDate(), &quot;Task due date should be updated&quot;);</span>
+<span class="fc" id="L193">    }</span>
+
+    @Test
+    void getUserIDShouldReturnCorrectUserID() {
+
+<span class="fc" id="L198">        Long expectedUserId = 1L;</span>
+<span class="fc" id="L199">        Users user = new Users(&quot;email@example.com&quot;, &quot;username&quot;, &quot;password&quot;, &quot;First&quot;, &quot;Last&quot;, false) {</span>
+            public Long getId() {
+<span class="fc" id="L201">                return expectedUserId;</span>
+            }
+        };
+<span class="fc" id="L204">        Task task = new Task();</span>
+<span class="fc" id="L205">        task.setUser(user);</span>
+
+<span class="fc" id="L207">        Long userID = task.getUserID();</span>
+
+<span class="fc" id="L209">        assertEquals(expectedUserId, userID, &quot;getUserID should return the correct user ID&quot;);</span>
+<span class="fc" id="L210">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

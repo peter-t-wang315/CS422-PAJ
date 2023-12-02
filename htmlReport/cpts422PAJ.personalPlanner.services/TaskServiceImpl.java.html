@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TaskServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">All in personalPlanner Coverage Results</a> &gt; <a href="index.source.html" class="el_package">cpts422PAJ.personalPlanner.services</a> &gt; <span class="el_source">TaskServiceImpl.java</span></div><h1>TaskServiceImpl.java</h1><pre class="source lang-java linenums">package cpts422PAJ.personalPlanner.services;
+
+import cpts422PAJ.personalPlanner.entities.Tag;
+import cpts422PAJ.personalPlanner.entities.Task;
+import cpts422PAJ.personalPlanner.repositories.TaskRepository;
+import cpts422PAJ.personalPlanner.entities.Users;
+import cpts422PAJ.personalPlanner.repositories.UserRepository;
+import org.springframework.stereotype.Service;
+
+import javax.swing.*;
+import java.awt.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+@Service
+public class TaskServiceImpl implements TaskService {
+    private TaskRepository taskRepository;
+    private UserService userService;
+
+    private TagService tagService;
+
+<span class="fc" id="L27">    public TaskServiceImpl(TaskRepository taskRepository, UserService userService, TagService tagService) {</span>
+<span class="fc" id="L28">        this.userService = userService;</span>
+<span class="fc" id="L29">        this.taskRepository = taskRepository;</span>
+<span class="fc" id="L30">        this.tagService = tagService;</span>
+<span class="fc" id="L31">    }</span>
+
+    @Override
+    public Iterable&lt;Task&gt; findAll() {
+<span class="fc" id="L35">        return taskRepository.findAll();</span>
+    }
+
+    @Override
+<span class="fc" id="L39">    public List&lt;Task&gt; getTasksForUser(Users user) { return taskRepository.findTasksByUserId(user.getId());}</span>
+    @Override
+<span class="fc" id="L41">    public List&lt;Task&gt; getTasksByTag(Tag tag) { return taskRepository.findTasksByTagId(tag.getId()); }</span>
+    @Override
+    public Task getTaskById(Long id) {
+<span class="fc" id="L44">        return taskRepository.findById(id).get();</span>
+    }
+
+    @Override
+    public Task save(Task task) {
+<span class="fc" id="L49">        Date newDueDate = calculateNewDueDate(task);</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (newDueDate == null) {</span>
+<span class="fc" id="L51">            System.out.println(&quot;There is no current due date&quot;);</span>
+<span class="fc" id="L52">            task.setDueDate(null);</span>
+        }
+        else {
+<span class="fc" id="L55">            task.setDueDate(new Timestamp(newDueDate.getTime()));</span>
+        }
+        // Admins have free range
+<span class="fc bfc" id="L58" title="All 2 branches covered.">        if (userService.checkIfAdmin()) {</span>
+<span class="fc" id="L59">            return taskRepository.save(task);</span>
+        }
+
+<span class="fc" id="L62">        Long uniqueness = userService.notUnique();</span>
+<span class="fc" id="L63">        int uniquenessLevel = uniquenessCalculator(uniqueness);</span>
+<span class="fc" id="L64">        String taskName = task.getTaskName().toLowerCase();</span>
+        // If the task name is longer than 30 characters it isn't allowed
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (taskName.length() &gt; 30) {</span>
+<span class="fc" id="L67">            System.out.println(&quot;This task name is too long&quot;);</span>
+<span class="fc" id="L68">            return task;</span>
+        }
+        // Can't save tasks that use alliteration. This is because all of the words start with
+        // the same letter which isn't unique
+        // Nested if: If the user is ANY unique it doesn't matter
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        else if (isAlliteration(taskName)) {</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (uniquenessLevel &gt; 0) {</span>
+<span class="fc" id="L75">                System.out.println(&quot;Is alliteration but user is unique&quot;);</span>
+            }
+            else {
+<span class="fc" id="L78">                System.out.println(&quot;This task is using alliteration which is not unique&quot;);</span>
+<span class="fc" id="L79">                return task;</span>
+            }
+        }
+        // Can't save tasks if they are the same name as a tag
+        // Nested if: If the user is MAX unique it doesn't matter
+<span class="fc" id="L84">        int tagNameFlag = 0;</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">        for (Tag tag : tagService.findAll()) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            if (tag.getName().toLowerCase().equals(taskName)) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">                if (uniquenessLevel == 2) {</span>
+<span class="fc" id="L88">                    System.out.println(&quot;User is max unique so this is fine&quot;);</span>
+                }
+                else {
+<span class="fc" id="L91">                    System.out.println(&quot;CANNOT SAVE: Task has the same name as a tag&quot;);</span>
+<span class="fc" id="L92">                    tagNameFlag = 1;</span>
+                }
+            }
+<span class="fc" id="L95">        }</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (tagNameFlag == 0) {</span>
+<span class="fc" id="L97">            System.out.println(&quot;Task is not tag name, can be saved&quot;);</span>
+        }
+        else {
+<span class="fc" id="L100">            return task;</span>
+        }
+        // If a task uses any letter more than 8 times, it can't be saved
+        // Nested if: If the user is ANY unique but it has the letter's W, X, Z in it, it doesn't matter
+        // Nested if: If the user is MAX unique it doesn't matter
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (characterCountOver8(taskName)) {</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">            if (uniquenessLevel == 1) {</span>
+<span class="fc bfc" id="L107" title="All 6 branches covered.">                if (taskName.contains(String.valueOf('w')) || taskName.contains(String.valueOf('x')) || taskName.contains(String.valueOf('z'))) {</span>
+<span class="fc" id="L108">                    System.out.println(&quot;Task has too many of the same letter but contains a W, X, or Z&quot;);</span>
+                }
+                else {
+<span class="fc" id="L111">                    System.out.println(&quot;CANNOT SAVE: Task has too many of the same letters without a w,x, or z&quot;);</span>
+<span class="fc" id="L112">                    return task;</span>
+                }
+            }
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            else if (uniquenessLevel == 2) {</span>
+<span class="fc" id="L116">                System.out.println(&quot;Task has too many of the same letter but is unique&quot;);</span>
+            }
+            else {
+<span class="fc" id="L119">                System.out.println(&quot;CANNOT SAVE: Task has too many of the same letter&quot;);</span>
+<span class="fc" id="L120">                return task;</span>
+            }
+        }
+        // If a task is made past due date, it can't be saved
+        // Nested if: If the user is MAX uniqueness it doesn't matter
+<span class="fc" id="L125">        Timestamp currentTime = new Timestamp(System.currentTimeMillis());</span>
+<span class="fc bfc" id="L126" title="All 4 branches covered.">        if (task.getDueDate() != null &amp;&amp; currentTime.after(task.getDueDate()))</span>
+        {
+<span class="fc bfc" id="L128" title="All 2 branches covered.">            if (uniquenessLevel == 2) {</span>
+<span class="fc" id="L129">                System.out.println(&quot;Task overdue but user is unique&quot;);</span>
+            }
+            else {
+<span class="fc" id="L132">                System.out.println(&quot;CANNOT SAVE: Task it is after due date&quot;);</span>
+<span class="fc" id="L133">                return task;</span>
+            }
+        }
+<span class="fc" id="L136">        System.out.println(&quot;They did not violate any rules&quot;);</span>
+<span class="fc" id="L137">        task = taskRepository.save(task);</span>
+<span class="fc" id="L138">        return task;</span>
+    }
+
+    public int uniquenessCalculator(Long uniqueness) {
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (uniqueness == 5) {</span>
+            // LOW
+<span class="fc" id="L144">            return 0;</span>
+        }
+        // Past this line is ANY uniqueness
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        else if (uniqueness == 10){</span>
+            // MID
+<span class="fc" id="L149">            return 1;</span>
+        }
+        else {
+            // MAX
+<span class="fc" id="L153">            return 2;</span>
+        }
+    }
+
+    public int amountOfTasks(Long uId){
+<span class="fc" id="L158">        List&lt;Task&gt; currTasks = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L159">        currTasks = taskRepository.findTasksByUserId(uId);</span>
+<span class="fc" id="L160">        return currTasks.size();</span>
+    }
+
+    public Date calculateNewDueDate(Task task) {
+<span class="fc" id="L164">        Tag tag = task.getTag();</span>
+
+        // If the user creates a due date, this should trump everything else
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (task.getManuallySetDueDate() != null) {</span>
+<span class="fc" id="L168">            return task.getManuallySetDueDate();</span>
+        }
+        // If the user doesn't create a due date, add auto generated due dates based on tags
+<span class="fc bfc" id="L171" title="All 2 branches covered.">        if (tag != null) {</span>
+<span class="fc" id="L172">            int dueDateIncrement = getDueDateIncrement(tag.getName());</span>
+            // If the task has any tag that isn't the None tag, we must give it the due date increment
+<span class="fc bfc" id="L174" title="All 2 branches covered.">            if (dueDateIncrement != 0) {</span>
+<span class="fc" id="L175">                Calendar cal = Calendar.getInstance();</span>
+<span class="fc" id="L176">                cal.setTime(task.getCreated());</span>
+<span class="fc" id="L177">                cal.set(Calendar.HOUR_OF_DAY, 0);</span>
+<span class="fc" id="L178">                cal.set(Calendar.MINUTE, 0);</span>
+<span class="fc" id="L179">                cal.set(Calendar.SECOND, 0);</span>
+<span class="fc" id="L180">                cal.set(Calendar.MILLISECOND, 0);</span>
+<span class="fc" id="L181">                cal.add(Calendar.DAY_OF_MONTH, dueDateIncrement);</span>
+<span class="fc" id="L182">                return new Date(cal.getTimeInMillis());</span>
+            }
+            // If the task has the None tag, kill the due date
+            else {
+<span class="fc" id="L186">                System.out.println(&quot;The task doesn't have a due date meaning that it will be auto assigned one&quot;);</span>
+<span class="fc" id="L187">                return null;</span>
+
+            }
+        }
+<span class="fc" id="L191">        return task.getDueDate();</span>
+    }
+
+    public int getDueDateIncrement(String tagName) {
+<span class="fc bfc" id="L195" title="All 2 branches covered.">        if (tagName.equals(&quot;Homework&quot;)) {</span>
+<span class="fc" id="L196">            return 7;</span>
+        }
+<span class="fc bfc" id="L198" title="All 2 branches covered.">        else if (tagName.equals(&quot;Work&quot;)) {</span>
+<span class="fc" id="L199">            return 14;</span>
+        }
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        else if (tagName.equals(&quot;Life&quot;)) {</span>
+<span class="fc" id="L202">            return 3;</span>
+        }
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        else if (tagName.equals(&quot;None&quot;)) {</span>
+<span class="fc" id="L205">            return 0;</span>
+        }
+<span class="fc" id="L207">        return 0;</span>
+    }
+
+
+    public boolean isAlliteration(String input) {
+        // Create a character array to store counts of each letter
+<span class="fc" id="L213">        int[] letterCounts = new int[26];</span>
+
+        // Split the input string into words
+<span class="fc" id="L216">        String[] words = input.split(&quot;\\s+&quot;);</span>
+
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        for (String word : words) {</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">            if (!word.isEmpty()) {</span>
+<span class="fc" id="L220">                char firstLetter = Character.toLowerCase(word.charAt(0));</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">                if (Character.isLetter(firstLetter)) {</span>
+<span class="fc" id="L222">                    int index = firstLetter - 'a';</span>
+<span class="fc" id="L223">                    letterCounts[index]++;</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">                    if (letterCounts[index] &gt; 3) {</span>
+<span class="fc" id="L225">                        return true;</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L230">        return false;</span>
+    }
+
+    public boolean characterCountOver8(String input) {
+<span class="fc bfc" id="L234" title="All 4 branches covered.">        if (input == null || input.isEmpty()) {</span>
+<span class="fc" id="L235">            return true;</span>
+        }
+<span class="fc" id="L237">        int[] charCount = new int[26];</span>
+<span class="fc" id="L238">        input = input.toLowerCase();</span>
+
+<span class="fc bfc" id="L240" title="All 2 branches covered.">        for (int i = 0; i &lt; input.length(); i++) {</span>
+<span class="fc" id="L241">            char c = input.charAt(i);</span>
+<span class="fc bfc" id="L242" title="All 4 branches covered.">            if (c &gt;= 'a' &amp;&amp; c &lt;= 'z') {</span>
+<span class="fc" id="L243">                int index = c - 'a';</span>
+<span class="fc" id="L244">                charCount[index]++;</span>
+            }
+        }
+<span class="fc" id="L247">        int maxCount = 0;</span>
+<span class="fc bfc" id="L248" title="All 2 branches covered.">        for (int count : charCount) {</span>
+<span class="fc bfc" id="L249" title="All 2 branches covered.">            if (count &gt; maxCount) {</span>
+<span class="fc" id="L250">                maxCount = count;</span>
+            }
+        }
+        
+<span class="fc bfc" id="L254" title="All 2 branches covered.">        if (maxCount &gt; 8) {</span>
+<span class="fc" id="L255">            return true;</span>
+        }
+        else {
+<span class="fc" id="L258">            return false;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

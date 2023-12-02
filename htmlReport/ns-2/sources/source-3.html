@@ -1,0 +1,339 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TaskController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cpts422PAJ.personalPlanner.controllers</a>
+</div>
+
+<h1>Coverage Summary for Class: TaskController (cpts422PAJ.personalPlanner.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TaskController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/48)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.4%
+  </span>
+  <span class="absValue">
+    (4/116)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cpts422PAJ.personalPlanner.controllers;
+&nbsp;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Tag;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Task;
+&nbsp;import cpts422PAJ.personalPlanner.entities.Users;
+&nbsp;import cpts422PAJ.personalPlanner.services.TagService;
+&nbsp;import cpts422PAJ.personalPlanner.services.TaskService;
+&nbsp;import cpts422PAJ.personalPlanner.services.UserService;
+&nbsp;import org.apache.catalina.User;
+&nbsp;import org.springframework.ui.Model;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.ModelAttribute;
+&nbsp;import org.springframework.web.bind.annotation.PathVariable;
+&nbsp;import org.springframework.web.bind.annotation.RequestMapping;
+&nbsp;import org.springframework.web.bind.annotation.RequestParam;
+&nbsp;
+&nbsp;import java.sql.Timestamp;
+&nbsp;import java.text.DateFormat;
+&nbsp;import java.text.ParseException;
+&nbsp;import java.text.SimpleDateFormat;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Calendar;
+&nbsp;import java.util.Date;
+&nbsp;
+&nbsp;@Controller
+&nbsp;public class TaskController {
+&nbsp;    private TaskService taskService;
+&nbsp;
+&nbsp;    private UserService userService;
+&nbsp;
+&nbsp;    private TagService tagService;
+&nbsp;
+<b class="fc">&nbsp;    public TaskController(TaskService taskService, UserService usersService, TagService tagService) {</b>
+<b class="fc">&nbsp;        this.taskService = taskService;</b>
+<b class="fc">&nbsp;        this.userService = usersService;</b>
+<b class="fc">&nbsp;        this.tagService = tagService;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/&quot;)
+&nbsp;    public String getTasks(Model model){
+&nbsp;//        System.out.println(&quot;In getTasks&quot;);
+&nbsp;//        Iterable&lt;Users&gt; all_users = userService.findAll();
+&nbsp;        try {
+&nbsp;            //this means that it is an admin account
+<b class="nc">&nbsp;            if (userService.checkIfAdmin()){</b>
+<b class="nc">&nbsp;                model.addAttribute(&quot;tasks&quot;, taskService.findAll());</b>
+<b class="nc">&nbsp;                model.addAttribute(&quot;users&quot;, userService.findAll());</b>
+<b class="nc">&nbsp;                return &quot;index&quot;;</b>
+&nbsp;            }else{ //this is a regular user
+<b class="nc">&nbsp;                Long idActiveUser = userService.findActiveUser();</b>
+<b class="nc">&nbsp;                Users current_user = userService.getUserById(idActiveUser);</b>
+<b class="nc">&nbsp;                model.addAttribute(&quot;tasks&quot;, taskService.getTasksForUser(current_user));</b>
+<b class="nc">&nbsp;                model.addAttribute(&quot;users&quot;, userService.findAll());</b>
+<b class="nc">&nbsp;                return &quot;index&quot;;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            System.out.println(e.getMessage());</b>
+&nbsp;
+<b class="nc">&nbsp;            userService.logOffAllUsers();</b>
+<b class="nc">&nbsp;            return &quot;redirect:/login&quot;;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/addTask&quot;)
+&nbsp;    public String addTask(Model model) {
+<b class="nc">&nbsp;        Task newTask = new Task();</b>
+<b class="nc">&nbsp;        Long idActiveUser = userService.findActiveUser();</b>
+&nbsp;
+&nbsp;        //True if not unique
+<b class="nc">&nbsp;        Long not_unique = userService.notUnique();</b>
+<b class="nc">&nbsp;        if (not_unique == 5){</b>
+<b class="nc">&nbsp;            if(taskService.amountOfTasks(idActiveUser) &gt;= 5){</b>
+<b class="nc">&nbsp;                return &quot;redirect:/&quot;;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        else if(not_unique == 10){</b>
+<b class="nc">&nbsp;            if(taskService.amountOfTasks(idActiveUser) &gt;= 10){</b>
+<b class="nc">&nbsp;                return &quot;redirect:/&quot;;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        else if(not_unique == 1000){</b>
+<b class="nc">&nbsp;            if(taskService.amountOfTasks(idActiveUser) &gt;= 1000){</b>
+<b class="nc">&nbsp;                return &quot;redirect:/&quot;;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;        System.out.println(newTask);</b>
+<b class="nc">&nbsp;        newTask = taskService.save(newTask);</b>
+<b class="nc">&nbsp;        System.out.println(newTask);</b>
+<b class="nc">&nbsp;        String newDueDate = null;</b>
+<b class="nc">&nbsp;        String createdTime = null;</b>
+<b class="nc">&nbsp;        String newManuallySetDueDate = null;</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;newTask&quot;, newTask);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;allUserIds&quot;, userService.findAll());</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;newDueDate&quot;, newDueDate);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;originalDueDate&quot;, newDueDate);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;newManuallySetDueDate&quot;, newManuallySetDueDate);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;createdTime&quot;, createdTime);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;allTags&quot;, tagService.findAll());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (idActiveUser == 0 ){</b>
+<b class="nc">&nbsp;            userService.logOffAllUsers();</b>
+<b class="nc">&nbsp;            return &quot;redirect:/login&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return &quot;addTask&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/editTask/{taskId}&quot;)
+&nbsp;    public String editTask(@PathVariable Long taskId, Model model) {
+<b class="nc">&nbsp;        Long idActiveUser = userService.findActiveUser();</b>
+<b class="nc">&nbsp;        Task current_task = taskService.getTaskById(taskId);</b>
+&nbsp;//        System.out.println(current_task.getUserID());
+&nbsp;//        System.out.println(idActiveUser);
+<b class="nc">&nbsp;        if (idActiveUser == 0 ){</b>
+<b class="nc">&nbsp;            userService.logOffAllUsers();</b>
+<b class="nc">&nbsp;            return &quot;redirect:/login&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (!idActiveUser.equals(current_task.getUserID()) &amp;&amp; userService.checkIfAdmin()){</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Bypass because admin&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else if (!idActiveUser.equals(current_task.getUserID()) &amp;&amp; !userService.checkIfAdmin()){</b>
+<b class="nc">&nbsp;            return &quot;redirect:/&quot;;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        Long userId = null;</b>
+<b class="nc">&nbsp;        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&#39;T&#39;HH:mm&quot;);</b>
+<b class="nc">&nbsp;        String newDueDate = (current_task.getDueDate() != null) ? dateFormat.format(current_task.getDueDate()) : &quot;&quot;;</b>
+<b class="nc">&nbsp;        String newManuallySetDueDate = (current_task.getManuallySetDueDate() != null) ? dateFormat.format(current_task.getManuallySetDueDate()) : &quot;&quot;;</b>
+<b class="nc">&nbsp;        String originalDueDate = newDueDate;</b>
+<b class="nc">&nbsp;        String createdTime = null;</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;currentTask&quot;, current_task);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;allTags&quot;, tagService.findAll());</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;newDueDate&quot;, newDueDate);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;originalDueDate&quot;, originalDueDate);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;newManuallySetDueDate&quot;, newManuallySetDueDate);</b>
+<b class="nc">&nbsp;        model.addAttribute(&quot;createdTime&quot;, createdTime);</b>
+&nbsp;//        model.addAttribute(&quot;userId&quot;, userId);
+<b class="nc">&nbsp;        model.addAttribute(&quot;allUserIds&quot;, userService.findAll());</b>
+<b class="nc">&nbsp;        return &quot;editTask&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @RequestMapping(&quot;/updateTask&quot;)
+&nbsp;    public String updateTask(@ModelAttribute Task task, @RequestParam Long userId, @RequestParam Long tagId, @RequestParam String createdTime, @RequestParam String newDueDate, @RequestParam String originalDueDate, @RequestParam String newManuallySetDueDate, Model model) {
+<b class="nc">&nbsp;        System.out.println(task);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;In updateeee&quot;);</b>
+<b class="nc">&nbsp;        if (userService.checkIfAdmin()) {</b>
+<b class="nc">&nbsp;            task.setUser(userService.getUserById(userId));</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            task.setUser(userService.getUserById(userService.findActiveUser()));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Tag selectedTag = tagService.findById(tagId);</b>
+<b class="nc">&nbsp;        task.setTag(selectedTag);</b>
+<b class="nc">&nbsp;        DateFormat dueDateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&#39;T&#39;HH:mm&quot;);</b>
+<b class="nc">&nbsp;        DateFormat createdDateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss.SSS&quot;);</b>
+&nbsp;
+&nbsp;        // Create the createdTime of the task
+<b class="nc">&nbsp;        Date parsedCreatedTime = null;</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            parsedCreatedTime = createdDateFormat.parse(createdTime);</b>
+<b class="nc">&nbsp;        } catch (ParseException e) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        Date parsedManuallySetDueDate = null;</b>
+<b class="nc">&nbsp;        if (newManuallySetDueDate == &quot;&quot;) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;There is no manually set due date&quot;);</b>
+&nbsp;        } else {
+&nbsp;            try {
+<b class="nc">&nbsp;                parsedManuallySetDueDate = dueDateFormat.parse(newManuallySetDueDate);</b>
+<b class="nc">&nbsp;                task.setManuallySetDueDate(parsedManuallySetDueDate);</b>
+<b class="nc">&nbsp;            } catch (ParseException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Due date is being messed up because when there is nothing, this doesn&#39;t run properly
+&nbsp;        // Have a check for if the dueDate is being updated even if the originalDueDate is empty;
+<b class="nc">&nbsp;        Date parsedDueDate = null;</b>
+<b class="nc">&nbsp;        if (newDueDate == &quot;&quot;) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;There is no new due date&quot;);</b>
+&nbsp;        } else {
+&nbsp;            try {
+<b class="nc">&nbsp;                parsedDueDate = dueDateFormat.parse(newDueDate);</b>
+<b class="nc">&nbsp;            } catch (ParseException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        Date parsedOriginalDueDate = null;</b>
+<b class="nc">&nbsp;        if (originalDueDate == &quot;&quot;) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;There is no original due date&quot;);</b>
+&nbsp;        } else {
+&nbsp;            try {
+<b class="nc">&nbsp;                parsedOriginalDueDate = dueDateFormat.parse(originalDueDate);</b>
+<b class="nc">&nbsp;            } catch (ParseException e) {</b>
+<b class="nc">&nbsp;                throw new RuntimeException(e);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(task);</b>
+&nbsp;        // If the originalDueDate is nothing but the user has now manually changed the date
+<b class="nc">&nbsp;        if (parsedOriginalDueDate == null &amp;&amp; parsedDueDate != null) {</b>
+<b class="nc">&nbsp;            task.setManuallySetDueDate(parsedDueDate);</b>
+&nbsp;        }
+&nbsp;        // If the newDueDate is different than the originalDueDate that means that the user has updated the due date
+<b class="nc">&nbsp;        else if (parsedDueDate != null &amp;&amp; !parsedDueDate.equals(parsedOriginalDueDate)) {</b>
+<b class="nc">&nbsp;            task.setManuallySetDueDate(parsedDueDate);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (parsedDueDate != null) {</b>
+<b class="nc">&nbsp;            task.setDueDate(new Timestamp(parsedDueDate.getTime()));</b>
+&nbsp;        }
+&nbsp;        else {
+<b class="nc">&nbsp;            task.setDueDate(null);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        task.setCreated(new Timestamp(parsedCreatedTime.getTime()));</b>
+<b class="nc">&nbsp;        taskService.save(task);</b>
+<b class="nc">&nbsp;        return &quot;redirect:/&quot;;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 13:25</div>
+</div>
+</body>
+</html>

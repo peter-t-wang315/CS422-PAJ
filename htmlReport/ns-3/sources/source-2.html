@@ -1,0 +1,265 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > Task</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">cpts422PAJ.personalPlanner.entities</a>
+</div>
+
+<h1>Coverage Summary for Class: Task (cpts422PAJ.personalPlanner.entities)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Task</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (23/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (39/39)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Task$HibernateInstantiator$61k3eB5x</td>
+  </tr>
+  <tr>
+    <td class="name">Task$HibernateInstantiator$qO9jLbtM</td>
+  </tr>
+  <tr>
+    <td class="name">Task$HibernateProxy$drTiwpq7</td>
+  </tr>
+  <tr>
+    <td class="name">Task$HibernateProxy$OumjpnkL</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (23/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (39/39)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package cpts422PAJ.personalPlanner.entities;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.sql.Timestamp;
+&nbsp;import java.util.Date;
+&nbsp;
+&nbsp;@Entity
+&nbsp;public class Task {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue
+&nbsp;    private Long id;
+&nbsp;
+&nbsp;    private String taskName;
+&nbsp;
+&nbsp;    private boolean completed;
+&nbsp;
+&nbsp;    private String note;
+&nbsp;
+&nbsp;    private Timestamp created;
+&nbsp;
+&nbsp;    private Date dueDate;
+&nbsp;
+&nbsp;    private Date manuallySetDueDate;
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;    @JoinColumn(name = &quot;tag_id&quot;)
+&nbsp;    private Tag tag;
+&nbsp;
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;//    @JoinColumn(name = &quot;Users_id&quot;)
+&nbsp;    private Users u;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public Task(String taskName, boolean completed, String note, Date dueDate, Users u, Tag tag) {</b>
+<b class="fc">&nbsp;        this.taskName = taskName;</b>
+<b class="fc">&nbsp;        this.completed = completed;</b>
+<b class="fc">&nbsp;        this.note = note;</b>
+<b class="fc">&nbsp;        this.created = new Timestamp(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;        this.dueDate = dueDate;</b>
+<b class="fc">&nbsp;        this.u = u;</b>
+<b class="fc">&nbsp;        this.manuallySetDueDate = dueDate;</b>
+<b class="fc">&nbsp;        this.tag = tag;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public Task() {</b>
+<b class="fc">&nbsp;        this.taskName = &quot;&quot;;</b>
+<b class="fc">&nbsp;        this.completed = false;</b>
+<b class="fc">&nbsp;        this.note = &quot;&quot;;</b>
+<b class="fc">&nbsp;        this.created = new Timestamp(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;        this.dueDate = null;</b>
+<b class="fc">&nbsp;        this.u = null;</b>
+<b class="fc">&nbsp;        this.manuallySetDueDate = null;</b>
+<b class="fc">&nbsp;        this.tag = null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setId(Long id) {
+<b class="fc">&nbsp;        this.id = id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Long getId() {
+<b class="fc">&nbsp;        return id;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getTaskName() {
+<b class="fc">&nbsp;        return taskName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTaskName(String taskName) {
+<b class="fc">&nbsp;        this.taskName = taskName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isCompleted() {
+<b class="fc">&nbsp;        return completed;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCompleted(boolean completed) {
+<b class="fc">&nbsp;        this.completed = completed;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getNote() {
+<b class="fc">&nbsp;        return note;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNote(String note) {
+<b class="fc">&nbsp;        this.note = note;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Timestamp getCreated() {
+<b class="fc">&nbsp;        return created;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Date getDueDate() {
+<b class="fc">&nbsp;        return dueDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDueDate(Timestamp dueDate) {
+<b class="fc">&nbsp;        this.dueDate = dueDate;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public Long getUserID() { return u.getId(); }</b>
+&nbsp;
+<b class="fc">&nbsp;    public Users getUser() { return u; }</b>
+&nbsp;
+<b class="fc">&nbsp;    public Tag getTag() { return tag; }</b>
+&nbsp;
+<b class="fc">&nbsp;    public String getTagName() { return tag.getName(); }</b>
+&nbsp;
+&nbsp;    public void setUser(Users u) {
+<b class="fc">&nbsp;        this.u = u;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setCreated(Timestamp created){
+<b class="fc">&nbsp;        this.created = created;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public void setTag(Tag tag) { this.tag = tag; }</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="fc">&nbsp;        return &quot;Task{&quot; +</b>
+&nbsp;                &quot;id=&quot; + id +
+&nbsp;                &quot;, taskName=&#39;&quot; + taskName + &#39;\&#39;&#39; +
+&nbsp;                &quot;, completed=&quot; + completed +
+&nbsp;                &quot;, note=&#39;&quot; + note + &#39;\&#39;&#39; +
+&nbsp;                &quot;, created=&quot; + created +
+&nbsp;                &quot;, manualDueDate=&quot; + manuallySetDueDate +
+&nbsp;                &quot;, dueDate=&quot; + dueDate +
+&nbsp;                &quot;, user=&quot; + u +
+&nbsp;                &quot;, tag=&quot; + tag +
+&nbsp;                &#39;}&#39;;
+&nbsp;    }
+&nbsp;
+&nbsp;    public Date getManuallySetDueDate() {
+<b class="fc">&nbsp;        return manuallySetDueDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setManuallySetDueDate(Date manuallySetDueDate) {
+<b class="fc">&nbsp;        this.manuallySetDueDate = manuallySetDueDate;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-10-30 13:25</div>
+</div>
+</body>
+</html>
