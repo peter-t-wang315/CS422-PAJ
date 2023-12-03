@@ -36,9 +36,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksForUser(Users user) {
-        return taskRepository.findTasksByUserId(user.getId());
-    }
+    public List<Task> getTasksForUser(Users user) { return taskRepository.findTasksByUserId(user.getId());}
     @Override
     public List<Task> getTasksByTag(Tag tag) { return taskRepository.findTasksByTagId(tag.getId()); }
     @Override
@@ -194,18 +192,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     public int getDueDateIncrement(String tagName) {
-        switch (tagName) {
-            case "Homework":
-                return 7;
-            case "Work":
-                return 14;
-            case "Life":
-                return 3;
-            case "None":
-                return 0;
-            default:
-                return 0;
+        if (tagName.equals("Homework")) {
+            return 7;
         }
+        else if (tagName.equals("Work")) {
+            return 14;
+        }
+        else if (tagName.equals("Life")) {
+            return 3;
+        }
+        else if (tagName.equals("None")) {
+            return 0;
+        }
+        return 0;
     }
 
 
